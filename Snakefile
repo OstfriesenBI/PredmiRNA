@@ -19,5 +19,6 @@ rule compute1:
     shell: "touch data/input1.txt"
 
 rule compute2:
+    conda: "envs/rnafold.yaml"
     output: "data/input2.txt"
-    shell: "touch data/input2.txt"
+    shell: "RNAfold -h > {output}"
