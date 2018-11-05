@@ -2,6 +2,7 @@
 BTW this is a [markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links) (.md) file, it allows for quick and easy rich text formatting, that can easily be read text only and converted to other formats.
 
 ## Contributing
+[Git tutorial](https://rogerdudler.github.io/git-guide/index.html)
 conda or miniconda with Python3 is [required](https://conda.io/docs/user-guide/install/index.html). [Installer](https://conda.io/miniconda.html)
 If you want to use anything from the local conda enviroment, you have to activate the conda enviroment or add it the binaries to the system path:
 ``` sh
