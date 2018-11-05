@@ -66,3 +66,7 @@ pom.properties
 
 # Word temporary
 ~$*.doc*
+
+#Datadir
+data
+.snakemake

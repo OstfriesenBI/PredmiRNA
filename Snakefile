@@ -2,7 +2,7 @@
 
 
 # The configuration file to load
-configfile: config.yaml
+configfile: "config.yaml"
 
 basedir = config["datadir"]
 SAMPLES = ["1", "2"]
