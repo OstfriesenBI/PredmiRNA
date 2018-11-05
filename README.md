@@ -19,7 +19,7 @@ echo 'export PATH=~/miniconda3/bin:$PATH' >> ~/.bash_aliases
 ```
 Make sure you have a git client installed or the git binary available. For easy acces [add a ssh key to github](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/), so that the storage of the github password is not needed.
 
-## Installing sankemake
+## Installing snakemake
 Using conda:
 ``` sh
 conda install -c bioconda -c conda-forge snakemake
