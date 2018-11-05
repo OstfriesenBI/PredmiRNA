@@ -1,0 +1,9 @@
+# Configuration for the workflow and installation directories  
+# YAML File format: https://github.com/Animosity/CraftIRC/wiki/Complete-idiot%27s-introduction-to-yaml
+
+{
+    "__default__" :
+    {
+        "datadir"    : "data"
+    }
+}
