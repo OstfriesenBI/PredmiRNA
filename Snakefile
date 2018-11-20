@@ -6,19 +6,22 @@ configfile: "config.yaml"
 
 basedir = config["datadir"]
 SAMPLES = ["1", "2"]
+realhairpins = basedir+"/mirbasehairpin.fst"
 
 
 # Just to test it for now:
 
 # SnakeMake creates directories automagically, if they are defined in the input/outputs
 rule all:
-    input: expand("data/input{sample}.txt",sample=SAMPLES)
+    input: realhairpins
 
-rule compute1:
-    output: "data/input1.txt"
-    shell: "touch data/input1.txt"
 
-rule compute2:
-    conda: "envs/rnafold.yaml"
-    output: "data/input2.txt"
-    shell: "RNAfold -h > {output}"
+
+rule downloadhairpinlong:
+    output: realhairpins+"-long"
+    shell: "curl ftp://mirbase.org/pub/mirbase/CURRENT/hairpin.fa.gz | gunzip > {output}"
+
+rule shorthairpin:
+    input: realhairpins+"-long"
+    output: realhairpins
+    shell: "head -n101 {input} >{output}"
