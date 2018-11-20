@@ -7,14 +7,14 @@ configfile: "config.yaml"
 basedir = config["datadir"]
 SAMPLES = ["1", "2"]
 realhairpins = basedir+"/mirbasehairpin.fst"
-
+rnafoldout = basedir+"/folded.txt"
+rnafoldps = basedir+"/rnaps/"
 
 # Just to test it for now:
 
 # SnakeMake creates directories automagically, if they are defined in the input/outputs
 rule all:
-    input: realhairpins
-
+    input: rnafoldout
 
 
 rule downloadhairpinlong:
@@ -25,3 +25,9 @@ rule shorthairpin:
     input: realhairpins+"-long"
     output: realhairpins
     shell: "head -n101 {input} >{output}"
+
+rule rnafold:
+    output: rnafoldout
+    input: realhairpins
+    conda: "envs/rnafold.yaml"
+    shell: "RNAfold --noPS < {input} > {output}"
