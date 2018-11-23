@@ -9,12 +9,12 @@ SAMPLES = ["1", "2"]
 realhairpins = basedir+"/mirbasehairpin.fst"
 rnafoldout = basedir+"/folded.txt"
 rnafoldps = basedir+"/rnaps/"
-
+rnafoldcsv = basedir+"/folded.csv"
 # Just to test it for now:
 
 # SnakeMake creates directories automagically, if they are defined in the input/outputs
 rule all:
-    input: rnafoldout
+    input: rnafoldcsv
 
 
 rule downloadhairpinlong:
@@ -31,3 +31,8 @@ rule rnafold:
     input: realhairpins
     conda: "envs/rnafold.yaml"
     shell: "RNAfold --noPS < {input} > {output}"
+
+rule rnafold2csv:
+    input: rnafoldout
+    output: rnafoldcsv
+    shell: "./scripts/rnafold2csv/rnafold2csv.py {input} > {output}"
