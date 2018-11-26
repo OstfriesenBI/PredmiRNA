@@ -1,0 +1,5 @@
+"comment","sequence";"realmiRNA"
+
+"A1","ZZZZZ";0
+
+"B2","XXXX";1

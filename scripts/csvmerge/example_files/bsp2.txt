@@ -1,0 +1,5 @@
+"comment","feature2here"
+
+"B2",0.5
+
+"A1",0.25
