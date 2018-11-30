@@ -1,0 +1,27 @@
+#!/bin/bash
+# Pass a file in as the first argument on the command line (note, not secure)
+if [ $# -ne 3 ]; then
+    echo "Please specify: file linesperfile fileprefix"
+    exit 1
+fi
+
+file=$1
+lines=$2
+output=$3
+
+# Get the header file out
+header=$(head -1 $file)
+
+# Separate the data from the header
+# output.data is a temp file
+tail -n +2 $file > output.data
+
+# Split the data into given lines per file (change as you wish)
+split -l $lines output.data $output
+rm output.data
+
+# Append the header back into each file from split 
+for part in `ls -1 $output*`
+do
+  printf "%s\n%s" "$header" "`cat $part`" > $part
+done
