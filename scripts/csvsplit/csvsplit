@@ -1,10 +1,12 @@
 #!/bin/bash
-# Pass a file in as the first argument on the command line (note, not secure)
+# Checks if the script has atleast 3 arguments
+# If not a message is displayed
 if [ $# -ne 3 ]; then
     echo "Please specify: file linesperfile fileprefix"
     exit 1
 fi
 
+# Assings arguments to following variables
 file=$1
 lines=$2
 output=$3
