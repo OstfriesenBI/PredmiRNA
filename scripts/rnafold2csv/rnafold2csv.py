@@ -6,8 +6,8 @@ floatregex="(^.+) \(([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\)"
 
 def main(argv):
 	if (len(argv)<1):
-		print("usage rnafold2csv.py <inputfile>")
-		print("Converts rnafold result file into an .csv to STDOUT")
+		print("usage rnafold2csv.py <inputfile>",file=sys.stderr)
+		print("Converts rnafold result file into an .csv to STDOUT",file=sys.stderr)
 		exit(1)
 	inputfile = argv[0]
 	with open(inputfile) as ifile:
@@ -21,8 +21,8 @@ def main(argv):
 				mfe=mferesult.group(2)
 				secstruct=mferesult.group(1)
 			else:
-				mfe=0
-				secstruct=""
+				print("Failed reading mfe/secondary structure in this line: "+secandmfeline,file=sys.stderr)
+				exit(2)
 			print(f'"{comment}","{sequence}","{secstruct}",{mfe}')
 if __name__ == "__main__":
    main(sys.argv[1:])
