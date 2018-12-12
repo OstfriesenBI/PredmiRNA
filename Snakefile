@@ -30,7 +30,7 @@ rule rnafold:
     output: rnafoldout
     input: realhairpins
     conda: "envs/rnafold.yaml"
-    shell: "RNAfold --noPS < {input} > {output}"
+    shell: "RNAfold --noPS -p < {input} > {output}"
 
 rule rnafold2csv:
     input: rnafoldout
