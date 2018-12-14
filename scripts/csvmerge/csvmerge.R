@@ -1,4 +1,4 @@
-
+setwd("C:\\Users\\filip\\OneDrive\\Documents\\GitHub\\PredmiRNA\\scripts\\csvmerge\\")
 multmerge = function(mypath){ #Pfad im ordener wo die csv sind muss angegeben werden.
   filenames=list.files(path=mypath, full.names=TRUE, pattern= "") #.= beliebiges zeichen, + = whdGruppe, \csv. für dateinamen, es sollen nur csv einglesen werden
   datalist = lapply(filenames, function(x){read.csv(file=x,header=T)})
@@ -7,6 +7,5 @@ multmerge = function(mypath){ #Pfad im ordener wo die csv sind muss angegeben we
   Reduce(function(x,y) {merge(x,y)}, datalist)} #reduce funktion produziert einen output der selber wieder als Input benutz werden kann. 
   #merge kombiniert nur 2, und mit reduce können quasi die folgenden csv Dateien zur Summe der bereits existierenden hinzugefügt werden.
 #besonderheit bei R: letze funktion in der Gesamtfunktion ist der Rückgabewert (statt return)
-multmerge("example_files")
-
-
+mymergeddata <- multmerge("example_files")
+View(datalist)
