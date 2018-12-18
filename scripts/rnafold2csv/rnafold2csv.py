@@ -2,7 +2,23 @@
 import sys
 import re
 
-floatregex="(^.+) \(([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)\)"
+'''
+Output element:
+>comment no 1
+UACACAUAUUACCACCGGUGAACUAUGCAAUUUUCUACCUUACCGGAGACAGAACUCUUCGA
+.....(.((..(((((((((((((.((((((((((((........(((((...))))))))))))))))).)))))))))))))..)).)......... (-42.50)
+.....(.((..(((((((((((((.((((((((((((({,,.....,,{{...}}})))))))))))))).)))))))))))))..)).}......... [-44.14]
+.....(.((..(((((((((((((.(((((((((((((..........((...))..))))))))))))).)))))))))))))..)).)......... {-38.20 d=6.37}
+ frequency of mfe structure in ensemble 0.0698212; ensemble diversity 8.65  
+'''
+
+floatregex="[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"
+regexmfeline="(^.+) \(("+floatregex+")\)" #Group 1: MFE sec. structure, Group 2: MFE (in kcal/mol)
+regexprobline="(^.+) \[("+floatregex+")\]" #Group 1: base pair probabilities, Group 2: EFE (in kcal/mol)
+regexcentroidline="(^.+) {("+floatregex+") d=("+floatregex+")}" #Group 1: centroid sec. structure, Group 2: centroid MFE (in kcal/mol), Group 3: distance to ensemble
+regexfreqdiv="frequency of mfe structure in ensemble ("+floatregex+"); ensemble diversity ("+floatregex+")" # Group 1: frequency, Group 2: diversity
+def cleanstring(toclean):
+	return toclean.replace("\n","").replace("\r","")
 
 def main(argv):
 	if (len(argv)<1):
@@ -13,15 +29,46 @@ def main(argv):
 	with open(inputfile) as ifile:
 		print('"comment","sequence","secstructure","mfe"')
 		for commentline in ifile:
-			comment=commentline.replace("\n","").replace("\r","").replace(">","")
-			sequence=next(ifile).replace("\n","").replace("\r","")
-			secandmfeline=next(ifile).replace("\n","").replace("\r","")
-			mferesult=re.search(floatregex,secandmfeline)
+			# Read the required lines:
+			comment=cleanstring(commentline).replace(">","") # Just remove the first char, this may go badly, you watch...
+			sequence=cleanstring(next(ifile))
+			secandmfeline=cleanstring(next(ifile))
+			pairprobsefeline=cleanstring(next(ifile))
+			centroidmfeensembledist=cleanstring(next(ifile))
+			frequencyandensemblediv=cleanstring(next(ifile))
+			# Run regex search
+			# MFE
+			mferesult=re.search(regexmfeline,secandmfeline)
 			if mferesult:
 				mfe=mferesult.group(2)
-				secstruct=mferesult.group(1)
+				msecstruct=mferesult.group(1)
 			else:
 				print("Failed reading mfe/secondary structure in this line: "+secandmfeline,file=sys.stderr)
+				exit(2)
+			# EFE
+			ensembleresult=re.search(regexprobline,pairprobsefeline)
+			if ensembleresult:
+				efe=ensembleresult.group(2)
+				bpprob=ensembleresult.group(1)
+			else:
+				print("Failed reading efe/base pair probabilities in this line: "+pairprobsefeline,file=sys.stderr)
+				exit(2)
+			# Centroid
+			centroidresult=re.search(regexcentroidline,centroidmfeensembledist)
+			if centroidresult:
+				ensembledistance=centroidresult.group(3)
+				centroidmfe=centroidresult.group(2)
+				centroidsecstructure=centroidresult.group(1)
+			else:
+				print("Failed reading the centroid structure in this line: "+centroidmfeensembledist,file=sys.stderr)
+				exit(2)
+			#Frequency, Diversity
+			freqresult=re.search(regexfreqdiv,frequencyandensemblediv)
+			if freqresult:
+				diversity=freqresult.group(2)
+				frequency=freqresult.group(1)
+			else:
+				print("Failed reading the frequency/diversity in this line: "+frequencyandensemblediv,file=sys.stderr)
 				exit(2)
 			print(f'"{comment}","{sequence}","{secstruct}",{mfe}')
 if __name__ == "__main__":
