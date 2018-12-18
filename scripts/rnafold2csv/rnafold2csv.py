@@ -12,11 +12,11 @@ UACACAUAUUACCACCGGUGAACUAUGCAAUUUUCUACCUUACCGGAGACAGAACUCUUCGA
  frequency of mfe structure in ensemble 0.0698212; ensemble diversity 8.65  
 '''
 
-floatregex="[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?"
-regexmfeline="(^.+) \(("+floatregex+")\)" #Group 1: MFE sec. structure, Group 2: MFE (in kcal/mol)
-regexprobline="(^.+) \[("+floatregex+")\]" #Group 1: base pair probabilities, Group 2: EFE (in kcal/mol)
-regexcentroidline="(^.+) {("+floatregex+") d=("+floatregex+")}" #Group 1: centroid sec. structure, Group 2: centroid MFE (in kcal/mol), Group 3: distance to ensemble
-regexfreqdiv="frequency of mfe structure in ensemble ("+floatregex+"); ensemble diversity ("+floatregex+")" # Group 1: frequency, Group 2: diversity
+floatregex=r'[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?'
+regexmfeline=r'(^.+) \(("+floatregex+")\)'#Group 1: MFE sec. structure, Group 2: MFE (in kcal/mol)
+regexprobline=r'(^.+) \[("+floatregex+")\]' #Group 1: base pair probabilities, Group 2: EFE (in kcal/mol)
+regexcentroidline=r'(^.+) {("+floatregex+") d=("+floatregex+")}' #Group 1: centroid sec. structure, Group 2: centroid MFE (in kcal/mol), Group 3: distance to ensemble
+regexfreqdiv=r'frequency of mfe structure in ensemble ("+floatregex+"); ensemble diversity ("+floatregex+")' # Group 1: frequency, Group 2: diversity
 def cleanstring(toclean):
 	return toclean.replace("\n","").replace("\r","")
 
@@ -27,7 +27,7 @@ def main(argv):
 		exit(1)
 	inputfile = argv[0]
 	with open(inputfile) as ifile:
-		print('"comment","sequence","secstructure","mfe"')
+		print('"comment","sequence","mfesecstructure","mfe","basepairprobs","efe","centroidsecstructure","centroidmfe","ensembledistance","freqmfestruct","ensemblediversity"')
 		for commentline in ifile:
 			# Read the required lines:
 			comment=cleanstring(commentline).replace(">","") # Just remove the first char, this may go badly, you watch...
@@ -70,6 +70,6 @@ def main(argv):
 			else:
 				print("Failed reading the frequency/diversity in this line: "+frequencyandensemblediv,file=sys.stderr)
 				exit(2)
-			print(f'"{comment}","{sequence}","{secstruct}",{mfe}')
+			print(f'"{comment}","{sequence}","{msecstruct}",{mfe},"{bpprob}",{efe},"{centroidsecstructure}",{centroidmfe},{ensembledistance},{frequency},{diversity}')
 if __name__ == "__main__":
    main(sys.argv[1:])
