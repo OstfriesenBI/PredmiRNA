@@ -1,0 +1,7 @@
+@relation x
+@attribute comment string
+@attribute sequence string
+@attribute realmiRNA numeric
+@data
+'A1','ZZZZZ',0
+'B2','XXXX',1
