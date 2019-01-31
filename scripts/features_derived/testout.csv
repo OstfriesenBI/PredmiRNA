@@ -1,3 +1,3 @@
-"comment","length","nefe"
-"mmu-mir-380 MI0000797 Mus musculus miR-380 stem-loop","6","-3.86666666666667"
-"mmu-mir-381 MI0000798 Mus musculus miR-381 stem-loop","5","-0.64"
+"comment","length","nefe","mfei2","mfei3","mfei4","tot_bases","n_stems","n_loops","dP","dG"
+"mmu-mir-380 MI0000797 Mus musculus miR-380 stem-loop","6","-3.86666666666667","-1.67777777777778","-1.25833333333333","-0.915151515151515","33","3","4","5.5","-5.03333333333333"
+"mmu-mir-381 MI0000798 Mus musculus miR-381 stem-loop","5","-0.64","0.34","0.17","0.425","4","1","2","0.8","0.34"
