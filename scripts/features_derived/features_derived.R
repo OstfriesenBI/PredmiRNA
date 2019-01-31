@@ -1,5 +1,5 @@
 
-feature_NEFE <- function(infile,out){
+features_derived <- function(infile,out){
 
   csvdf <- read.csv(infile, header = TRUE, sep = ",", stringsAsFactors = FALSE)
   
@@ -14,4 +14,4 @@ feature_NEFE <- function(infile,out){
   write.csv(total, file=out, row.names=FALSE)
 }
 
-feature_NEFE("test.csv","testout.csv")
+features_derived("test.csv","testout.csv")
