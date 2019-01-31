@@ -1,17 +1,17 @@
 
-feature_NEFE <- function(csvpath){
+feature_NEFE <- function(infile,out){
 
-  csvdf <- read.csv(csvpath, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+  csvdf <- read.csv(infile, header = TRUE, sep = ",", stringsAsFactors = FALSE)
   
 
   # Apply the function GC on the matrix of the data, which only contains the sequences  
-  gccontent <- apply(as.matrix(csvdf[, "sequence"]),1,nchar)
-  
-  total <- cbind(comment=csvdf[,"comment"], gccontent=gccontent)
+  length <- apply(as.matrix(csvdf[, "sequence"]),1,nchar)
+  NEFE <- csvdf[,"efe"]/length
+
+  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE)
 
   # Writes Data Frame to a .csv file
-  write.csv(total, file="feature_gccontent.csv", row.names=FALSE)
+  write.csv(total, file=out, row.names=FALSE)
 }
 
-# Call of the function to test, has to be removed for Snakemake (!)
-feature_gccontent("test.csv")
+feature_NEFE("test.csv","testout.csv")
