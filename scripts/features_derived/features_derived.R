@@ -18,7 +18,8 @@ features_derived <- function(infile,out){
   mfeI3 <- dG/n_loops
   mfeI4 <- csvdf[,"mfe"]/tot_bases
   dP <- tot_bases/length
-  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG)
+  diff <- dG-NEFE
+  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG,diff)
   # Writes Data Frame to a .csv file
   write.csv(total, file=out, row.names=FALSE)
 }
