@@ -3,3 +3,4 @@ channels:
   - bioconda
 dependencies:
   - viennarna=2.4.9
+  - randfold=2.0.1

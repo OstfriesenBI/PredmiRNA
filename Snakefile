@@ -10,6 +10,7 @@ realhairpins = basedir+"/mirbasehairpin.fst"
 rnafoldout = basedir+"/folded.txt"
 rnafoldps = basedir+"/rnaps/"
 rnafoldcsv = basedir+"/folded.csv"
+randfoldcsv = basedir+"/randfold.csv"
 # Just to test it for now:
 
 # SnakeMake creates directories automagically, if they are defined in the input/outputs
