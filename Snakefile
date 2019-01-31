@@ -36,3 +36,9 @@ rule rnafold2csv:
     input: rnafoldout
     output: rnafoldcsv
     shell: "./scripts/rnafold2csv/rnafold2csv.py {input} > {output}"
+
+rule dustmasker:
+    input: realhairpins
+    output: realhairpins+"-dust"
+    shell: "dustmasker -in {output} -outfmt fasta -out {output} -level 15"
+
