@@ -1,0 +1,59 @@
+---
+title: "PredmiRNA"
+author: "Bo Zheng, Marius Rüve, Filip Mazug, Lukas Jansen"
+date: "February 1, 2019"
+output: 
+   powerpoint_presentation:
+    toc: true
+    reference_doc: template.pptx
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+# Section 1
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+# Section 2
+
+## Slide with R Output
+
+```{r, echo = TRUE}
+summary(mtcars)
+```
+
+## Slide with data.frame!
+
+```{r}
+knitr::kable(head(mtcars[,c("mpg","cyl")]))
+```
+
+## Slide with Plot
+
+```{r pressure,dpi=300}
+plot(pressure)
+```
+
+---
+```{r, dpi=300}
+plot(density(mtcars$mpg))
+```
+
+## I found my new favourite toy
+![I love this](https://i.imgur.com/DktJUwl.gif)
+
+
