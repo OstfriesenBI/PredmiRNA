@@ -10,17 +10,10 @@ feature_dinucfrq <- function(inputcsv){
   
   print(mySequence)
   
-  # PROBLEM: Dunno what is going on here rn
-  countDinuc <- list()
-  
+  # For-Loop to iterate over the sequences and apply func count()
   for(i in mySequence){
-    tempCount <- count(i, wordsize=2, alphabet = s2c("acgu"))
-    countDinuc <- append(tempCount)
+    print(count(tolower(s2c(i)), wordsize = 2, alphabet = s2c("acgu")))
   }
-  # END of confusion
-  
-  print(countDinucs)
-  
 }
 
 feature_dinucfrq("test.csv")
