@@ -57,3 +57,6 @@ rule shuffleSeq:
 		seqshuffled
 	shell: "perl scripts/shuffle/genRandomRNA.pl -n 200 -m m < {input.seq} > {output}"
       # m d z oder f
+
+
+#For RNAspectral: grep --invert-match '[]}]$\| frequ' folded.txt | ../scripts/shuffle/RNAspectral.exe

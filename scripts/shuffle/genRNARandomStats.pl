@@ -130,7 +130,7 @@ while (my $line = <INFILE>) { # Read line by line.
 	}
 	
 	# Fasta Third Line i.e. RNA secondary structure and MFE
-    elsif ($line =~ m/^[.(]/) {
+        elsif ($line =~ m/\)$/) {
     	if ($numSeqs > $statsID) {
 			$line =~ s/\( /\(/;
 			($cstruct[$i], $cmfe[$i]) = split(/ /, $line);
@@ -172,7 +172,7 @@ while (my $line = <INFILE>) { # Read line by line.
 			last if (scalar(@amfe) == $numSeqs);
 		}
 	}			
-    else { }
+    else {printf("$line\n");}
   
 }#end of while loop
 
