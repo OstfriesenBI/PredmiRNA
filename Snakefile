@@ -11,6 +11,8 @@ rnafoldout = basedir+"/folded.txt"
 rnafoldps = basedir+"/rnaps/"
 rnafoldcsv = basedir+"/folded.csv"
 randfoldcsv = basedir+"/randfold.csv"
+runshuffleinstall = basedir+"/installedshuffle"
+seqshuffled = basedir+"/shuffled.fst"
 # Just to test it for now:
 
 # SnakeMake creates directories automagically, if they are defined in the input/outputs
@@ -36,10 +38,22 @@ rule rnafold:
 rule rnafold2csv:
     input: rnafoldout
     output: rnafoldcsv
-    shell: "./scripts/rnafold2csv/rnafold2csv.py {input} > {output}"
+    shell: "scripts/rnafold2csv/rnafold2csv.py {input} > {output}"
 
 rule dustmasker:
     input: realhairpins
     output: realhairpins+"-dust"
     shell: "dustmasker -in {output} -outfmt fasta -out {output} -level 15"
 
+rule installPerlShuffle:
+	output: runshuffleinstall
+	shell: "PERL_MM_USE_DEFAULT=1 cpan Algorithm::Numerical::Shuffle > {output}"
+
+rule shuffleSeq:
+	input:
+		seq=realhairpins,
+		runshuffleinstall
+	output: 
+		seqshuffled
+	shell: "perl scripts/shuffle/genRandomRNA.pl -n 200 -m m < {input.seq} > {output}"
+      # m d z oder f

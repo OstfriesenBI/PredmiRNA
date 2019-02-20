@@ -88,7 +88,6 @@ open (MFEFILE, "<$mfeFile") or die( "Cannot open input file $mfeFile: $!" );
 # ID Mean SD
 $numSeqs = 0;
 while (my $line = <MFEFILE>) {
-
 	chomp($line);
 	if ($line =~ m/^>/) { }
 	
@@ -96,16 +95,15 @@ while (my $line = <MFEFILE>) {
 		$aseq[$numSeqs] = $line;
 	}
 	# Fasta Third Line i.e. RNA secondary structure and MFE
-    elsif ($line =~ m/^[.(]/) {
+    elsif ($line =~ m/\)$/) {
 		$line =~ s/\( /\(/;
 		($astruct[$numSeqs], $amfe[$numSeqs]) = split(/ /, $line);
 		$amfe[$numSeqs] =~ s/[()]//g;
-		
 		($aQ[$numSeqs], $aD[$numSeqs], $aBP[$numSeqs], $aSS[$numSeqs]) = rnaAnalysis($aseq[$numSeqs], length($aseq[$numSeqs]), $astruct[$numSeqs], $amfe[$numSeqs]);
 		$numSeqs++;
 		
 	}			
-    else { }
+    else {}
   
 }#end of while loop
 close (MFEFILE) or die( "Cannot close input file $mfeFile: $!" );
@@ -123,7 +121,6 @@ map { print (OUTFILE "\n$_"); } @templines;
 my $i = 0; #index for $numRandomSeqs
 $numSeqs = 0;
 while (my $line = <INFILE>) { # Read line by line.
-
 	chomp($line);
 	if ($line =~ m/^>/) { }
 	

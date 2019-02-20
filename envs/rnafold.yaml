@@ -4,3 +4,4 @@ channels:
 dependencies:
   - viennarna=2.4.9
   - randfold=2.0.1
+  - perl-bioperl=1.7.2
