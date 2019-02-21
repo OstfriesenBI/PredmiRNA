@@ -22,16 +22,35 @@ inputgroups=["real_izmar","pseudo_izmar"]
 
 
 #
+# Join the calculated .csv files
+#
+rule joincsv:
+	output:
+		basedir+"/{inputgroup}/split-{index}.csv"
+	shell:
+		"touch {output}"
+
+#
+# Merge the .csv files from the sets
+#
+rule mergecsv:
+	input:
+		csvs=expand(basedir+"/{{inputgroup}}/split-{index}.csv",index=splitindices)
+	output:
+		csv=basedir+"/{inputgroup}/combined.csv"
+	script:
+		"scripts/concatenateCsvs/concatenateCsvs.R"
+#
 # Merge the generated .csv files
 #
-csvtemplate=basedir+"/{inputgroup}-{index}.csv";
 rule mergefinalcsv:
         input:
-                csvs=expand(csvtemplate,inputgroup=inputgroups,index=["full"])
+                csvs=expand(rules.mergecsv.output.csv,inputgroup=inputgroups)
         output:
-                csv=expand(csvtemplate,inputgroup=["all"],index=["full"])
+                csv=basedir+"/all.csv"
         script:
                 "scripts/concatenateCsvs/concatenateCsvs.R"
+
 
 #
 # Generate the project presentation
