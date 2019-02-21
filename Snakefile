@@ -4,8 +4,11 @@
 # The configuration file to load
 configfile: "config.yaml"
 
+splitindices=[i for i in range(0,100)];
+
+
+# Paths
 basedir = config["datadir"]
-SAMPLES = ["1", "2"]
 realhairpins = basedir+"/mirbasehairpin.fst"
 rnafoldout = basedir+"/folded.txt"
 rnafoldps = basedir+"/rnaps/"
@@ -13,11 +16,34 @@ rnafoldcsv = basedir+"/folded.csv"
 randfoldcsv = basedir+"/randfold.csv"
 runshuffleinstall = basedir+"/installedshuffle"
 seqshuffled = basedir+"/shuffled.fst"
-# Just to test it for now:
 
-# SnakeMake creates directories automagically, if they are defined in the input/outputs
-rule all:
-    input: rnafoldcsv
+
+inputgroups=["real_izmar","pseudo_izmar"]
+
+
+#
+# Merge the generated .csv files
+#
+csvtemplate=basedir+"/{inputgroup}-{index}.csv";
+rule mergefinalcsv:
+        input:
+                csvs=expand(csvtemplate,inputgroup=inputgroups,index=["full"])
+        output:
+                csv=expand(csvtemplate,inputgroup=["all"],index=["full"])
+        script:
+                "scripts/concatenateCsvs/concatenateCsvs.R"
+
+#
+# Generate the project presentation
+#
+rule presentation:
+	input:
+		template="presentation/template.pptx",
+		finalcsv=rules.mergefinalcsv.output.csv
+	output:
+		presentation=basedir+"/presentation.pptx"
+	script:
+		"presentation/projectpresentation.Rmd"
 
 
 rule downloadhairpinlong:
@@ -51,8 +77,7 @@ rule installPerlShuffle:
 
 rule shuffleSeq:
 	input:
-		seq=realhairpins,
-		runshuffleinstall
+		seq=realhairpins
 	output: 
 		seqshuffled
 	shell: "perl scripts/shuffle/genRandomRNA.pl -n 200 -m m < {input.seq} > {output}"

@@ -1,12 +1,11 @@
 ---
 title: "PredmiRNA"
 author: "Bo Zheng, Marius Rüve, Filip Mazug, Lukas Jansen"
-date: "February 1, 2019"
+date: "`r format(Sys.Date())`"
 output: 
    powerpoint_presentation:
     toc: true
-    reference_doc: template.pptx
-    
+    reference_doc:  /nfs/home/btbi/l/lu6085/PredmiRNA/presentation/template.pptx
 ---
 
 ```{r setup, include=FALSE}
