@@ -66,6 +66,8 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## RNAFold
 
+
+
 ## Bsp1
 Erklärung + Bilder
 
@@ -91,7 +93,16 @@ BILD ZU VISUALISIERUNG
 
 ## Python
 
+- Intepretierte, High-Level, Allzweck-Programmiersprache
+- Readability
+- Genutzt für: Web development, software development, mathematics, system scripting
+- Einfache Syntax ähnlich zur englischen Sprache
+- Benutzt neue Linien anstelle von z.B. Semikolons
+
 ## R
+
+- Programmiersprache und kostenlose Software Enviroment für statistische Berechnungen und Grafiken 
+- Wird benutzt von Statistiker und Data Miner um statistische Software und Daten Analysen zu entwickeln
 
 ## Perl
 
