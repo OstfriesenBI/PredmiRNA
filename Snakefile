@@ -51,6 +51,17 @@ rule mergefinalcsv:
         script:
                 "scripts/concatenateCsvs/concatenateCsvs.R"
 
+#
+# Generate .arff for Weka
+#
+rule arff:
+	input:
+		rules.mergefinalcsv.output.csv
+	output:
+		basedir+"/all.arff"
+	script:
+		"scripts/csv2arff/csv2arff.R"
+
 
 #
 # Generate the project presentation
