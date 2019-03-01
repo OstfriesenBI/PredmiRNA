@@ -5,7 +5,7 @@ date: "`r format(Sys.Date())`"
 output: 
    powerpoint_presentation:
     toc: true
-    reference_doc:  /nfs/home/btbi/l/lu6085/PredmiRNA/presentation/template.pptx
+    reference_doc:  template.pptx
 ---
 
 ```{r setup, include=FALSE}
@@ -13,44 +13,89 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-# Section 1
+# Einleitung
 
-## R Markdown
+## Micro RNA
 
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+- Kleines, nicht codierendes RNA Molekül, welches man in 
+- In Pflanzen, Tieren oder Viren vorzufinden
+- Ca. 22 Nukleotide groß
+- Lagert sich an komplementäre messenger RNA --> posttranskriptionale Regulation der Genexpression
+  - Verhindert die Anlagerung an die Ribosomen --> keine Proteinbiosynthese
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+## Motivation
 
-## Slide with Bullets
+- Micro RNA Bedeutung und Wichtigkeit; Medizinische Zwecke
+- Daher ML als Ansatz zur vorhersage von miRNA
+- Ziel: Feature Kombination, Machine Learining verstehen, Berührung mir versch. Prog.sprachen
 
-- Bullet 1
-- Bullet 2
-- Bullet 3
+## Machine Learning
 
-# Section 2
+- Anwendung von künstlicher Intelligenz
+  - Möglichkeit des Lernens anhand von Testdaten
+- Verschiedene Machine Learning (ML) Mathoden:
+  - Supervised ML:
+    - Alle Ergebnisse der Daten eines Testdatensatzes sind gegeben, basierend auf diesen lernt der Algorithmus die Ergebnisse für unbekannte Daten vorherzusagen
+  - Unsupervised ML:
+    - Hier sind die Ergebnisse für die Testdaten nich gegeben und der Algorithmus muss selber eine Struktur erkennen/ lernen, wodurch er neue Daten bewerten kann
 
-## Slide with R Output
+# Phasen
 
-```{r, echo = TRUE}
-summary(mtcars)
-```
+## Phase 1
 
-## Slide with data.frame!
+- Vorbereitung der Features
+  - Inhalt/ Aussage der einzelnen Features
+  - Verstehen der Berechnung
+  - Planung des Outputs
+  - Mögliche Tools zur Vereinfachung
+- Schreiben der einzelnen Skripte für die Features
 
-```{r}
-knitr::kable(head(mtcars[,c("mpg","cyl")]))
-```
+## Phase 2
 
-## Slide with Plot
+- Einbindung der Skripte in den Workflow (Snakemake)
+  - Testdaten --> Ergebnisse der einzelnen Features
+- Visualisierung der Daten
 
-```{r pressure,dpi=300}
-plot(pressure)
-```
+## Phase 3
 
----
-```{r, dpi=300}
-plot(density(mtcars$mpg))
-```
+- Java/ R/ Python Programm, welches in WEKA verschiedenen Modelle trainiert und auswertet
+- Lulu hilf uns ! plz 
+
+
+# RNAFold & Feature Beispiele
+
+## RNAFold
+
+## Bsp1
+Erklärung + Bilder
+
+## Bsp2
+
+## Bsp3
+
+# Erklärung der Tools und Vorgehensweise
+
+## Snakemake
+
+- Snakemake ist ein auf Python basierendes Workflow-Management-Tool
+- Ein Workflow beinhaltet ein Satz an Regeln
+- Eine Regel ist eine Beschreibung, wie aus einem Input-File ein Output-File zu erzeugen ist
+- Dadurch können Ergebnisse von einem Skript an ein anderes weitergegeben werden
+BILD ZU VISUALISIERUNG
+
+## WeKa
+
+- Sammlung von ML Algorithmen für Data Mining Augaben
+- Die Algorithmen können entweder direkt auf die Daten angewendet werden oder in einem Java Programm aufgrufen werden
+-  Weka beinhaltet Tools zur Daten-Vorbereitung, Klassifizierung, Regression, Clustering und Visualisierung
+
+## Python
+
+## R
+
+## Perl
+
+## Vorgehensweise
 
 ## I found my new favourite toy
 ![I love this](https://i.imgur.com/DktJUwl.gif)
