@@ -19,5 +19,13 @@ fasta2csv <- function(in_path, out_path, realmiRNA) {
     write.csv(df,out_path,row.names=FALSE)
 }
 
-# Calls the function to test it, has to be swapped out late to be used with snakemake
-fasta2csv("Test.fasta", "Datenbank.csv", 1)
+if(exists("snakemake")){
+	real=0
+	if(grepl(snakemake@params[["realmarker"]],snakemake@input[[1]])){
+		real=1
+	}
+	fasta2csv(snakemake@input[[1]], snakemake@output[[1]], real)
+}else{
+	# Calls the function to test it, has to be swapped out late to be used with snakemake
+	fasta2csv("Test.fasta", "Datenbank.csv", 1)
+}

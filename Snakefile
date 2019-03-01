@@ -17,10 +17,21 @@ randfoldcsv = basedir+"/randfold.csv"
 runshuffleinstall = basedir+"/installedshuffle"
 seqshuffled = basedir+"/shuffled.fst"
 
-
 inputgroups=["real_izmar","pseudo_izmar"]
+# Real miRNA has to contain "real"
 
-
+#
+# Convert the given fasta into a csv file
+#
+rule fasta2csv:
+	input:
+		basedir+"/{inputgroup}.fasta"
+	output:
+		basedir+"/{inputgroup}.csv"
+	params:
+		realmarker="real"
+	script:
+		"scripts/fasta2csv/fasta2csv.R"
 #
 # Join the calculated .csv files
 #

@@ -13,5 +13,3 @@ if(exists("snakemake")){
 }
 data = read.csv(infile,stringsAsFactors = FALSE)
 write.arff(x=data, file=outfile, eol = "\n", relation = deparse(substitute(x)))
-
-
