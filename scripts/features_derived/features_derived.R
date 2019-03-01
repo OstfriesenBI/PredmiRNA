@@ -7,13 +7,17 @@ features_derived <- function(infile,out){
 
   # Apply the function GC on the matrix of the data, which only contains the sequences  
   length <- apply(as.matrix(csvdf[, "sequence"]),1,nchar)
+  freqs <- data.frame()
+  for(i in csvdf[, "sequence"]){
+    freqs <- rbind(freqs,data.frame(t(as.matrix(count(tolower(s2c(i)), wordsize = 2, freq = T, alphabet = s2c("acgu"))))))
+  }
   NEFE <- csvdf[,"efe"]/length
   dG <-  csvdf[,"mfe"]/length
   n_stems <- apply(as.matrix(csvdf[,"mfesecstructure"]),1, function(seq){str_count(seq,'(\\(){3,}')})
   tot_bases <-  apply(as.matrix(csvdf[,"mfesecstructure"]),1, function(seq){str_count(seq,'(\\()')})
   n_loops <- apply(as.matrix(csvdf[,"mfesecstructure"]),1, function(seq){str_count(seq,'(\\.){3,}')})
-  # GC calc here
-  #mfeI1 <- dG/gccontent
+  gccontent <- apply(as.matrix(csvdf[, "sequence"]),1,function(rnaseq){GC(s2c(rnaseq))})
+  mfeI1 <- dG/gccontent
   mfeI2 <- dG/n_stems
   mfeI3 <- dG/n_loops
   mfeI4 <- csvdf[,"mfe"]/tot_bases
