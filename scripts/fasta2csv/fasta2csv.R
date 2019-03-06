@@ -9,11 +9,11 @@ fasta2csv <- function(in_path, out_path, realmiRNA) {
     fastaFile <- readRNAStringSet(in_path)
 
     # Assings the name and the sequence from the fasta file to a variable
-    seq_name = names(fastaFile)
+    comment = names(fastaFile)
     sequence = paste(fastaFile)
 
     # Creates a data frame
-    df <- data.frame(seq_name, sequence, realmiRNA)
+    df <- data.frame(comment, sequence, realmiRNA)
     
     # Writes the data frame to csv file to given path without extra row names
     write.csv(df,out_path,row.names=FALSE)

@@ -4,7 +4,8 @@
 # The configuration file to load
 configfile: "config.yaml"
 
-splitindices=[i for i in range(0,100)];
+noofsplits=1
+splitindices=['%07d'%i for i in range(0,noofsplits)];
 
 
 # Paths
@@ -17,29 +18,73 @@ randfoldcsv = basedir+"/randfold.csv"
 runshuffleinstall = basedir+"/installedshuffle"
 seqshuffled = basedir+"/shuffled.fst"
 
+wildcard_constraints:
+    index="\d+"
+
 inputgroups=["real_izmar","pseudo_izmar"]
 # Real miRNA has to contain "real"
 
 #
-# Convert the given fasta into a csv file
+# Run rnafold
 #
-rule fasta2csv:
+rule fold:
+	input:
+		basedir+"/{inputgroup}/split/{inputgroup}.fasta_chunk_{index}"
+	output:
+		basedir+"/{inputgroup}/fold/{index}.fold"
+	conda: 
+		"envs/rnafold.yaml"
+	shadow:
+		"shallow"
+	shell:
+		"RNAfold --noPS -p < {input} > {output}"
+#
+# Parse rnafold
+#
+rule parsernafold:
+	input:
+		rules.fold.output
+	output:
+		basedir+"/{inputgroup}/datasplit/{index}.fold.csv"
+	script:
+		"scripts/rnafold2csv/rnafold2csv.py"
+#
+# Split fasta file
+#
+rule splitfasta:
 	input:
 		basedir+"/{inputgroup}.fasta"
 	output:
-		basedir+"/{inputgroup}.csv"
+		expand(basedir+"/{{inputgroup}}/split/{{inputgroup}}.fasta_chunk_{index}",index=splitindices)
+	params:
+		splits=noofsplits,
+		outputdir=directory(basedir+"/{inputgroup}/split/")
+	shell:
+		"fastasplit -f {input} -o {params.outputdir} -c {params.splits}"
+
+#
+# Convert the given fasta chunk into a csv file
+#
+rule fasta2csv:
+	input:
+		basedir+"/{inputgroup}/split/{inputgroup}.fasta_chunk_{index}"
+	output:
+		basedir+"/{inputgroup}/datasplit/{index}.seq.csv"
 	params:
 		realmarker="real"
 	script:
 		"scripts/fasta2csv/fasta2csv.R"
+
 #
 # Join the calculated .csv files
 #
 rule joincsv:
+	input:
+		expand(basedir+"/{{inputgroup}}/datasplit/{{index}}.{type}.csv",type=["fold","seq"]) 
 	output:
 		basedir+"/{inputgroup}/split-{index}.csv"
-	shell:
-		"touch {output}"
+	script:
+		"scripts/csvmerge/csvmerge.R"
 
 #
 # Merge the .csv files from the sets
@@ -86,21 +131,6 @@ rule presentation:
 	script:
 		"presentation/projectpresentation.Rmd"
 
-
-rule downloadhairpinlong:
-    output: realhairpins+"-long"
-    shell: "curl ftp://mirbase.org/pub/mirbase/CURRENT/hairpin.fa.gz | gunzip > {output}"
-
-rule shorthairpin:
-    input: realhairpins+"-long"
-    output: realhairpins
-    shell: "head -n101 {input} >{output}"
-
-rule rnafold:
-    output: rnafoldout
-    input: realhairpins
-    conda: "envs/rnafold.yaml"
-    shell: "RNAfold --noPS -p < {input} > {output}"
 
 rule rnafold2csv:
     input: rnafoldout
