@@ -4,17 +4,12 @@
 # The configuration file to load
 configfile: "config.yaml"
 
-noofsplits=1
+noofsplits=2
 splitindices=['%07d'%i for i in range(0,noofsplits)];
 
 
 # Paths
 basedir = config["datadir"]
-realhairpins = basedir+"/mirbasehairpin.fst"
-rnafoldout = basedir+"/folded.txt"
-rnafoldps = basedir+"/rnaps/"
-rnafoldcsv = basedir+"/folded.csv"
-randfoldcsv = basedir+"/randfold.csv"
 runshuffleinstall = basedir+"/installedshuffle"
 seqshuffled = basedir+"/shuffled.fst"
 
@@ -74,13 +69,22 @@ rule fasta2csv:
 		realmarker="real"
 	script:
 		"scripts/fasta2csv/fasta2csv.R"
-
+#
+# Calculates features from the fold csv file
+#
+rule derviedcsv:
+	input:
+		rules.parsernafold.output
+	output:
+		basedir+"/{inputgroup}/datasplit/{index}.derived.csv"
+	script:
+		"scripts/features_derived/features_derived.R"
 #
 # Join the calculated .csv files
 #
 rule joincsv:
 	input:
-		expand(basedir+"/{{inputgroup}}/datasplit/{{index}}.{type}.csv",type=["fold","seq"]) 
+		expand(basedir+"/{{inputgroup}}/datasplit/{{index}}.{type}.csv",type=["fold","seq","derived"]) 
 	output:
 		basedir+"/{inputgroup}/split-{index}.csv"
 	script:
@@ -132,26 +136,22 @@ rule presentation:
 		"presentation/projectpresentation.Rmd"
 
 
-rule rnafold2csv:
-    input: rnafoldout
-    output: rnafoldcsv
-    shell: "scripts/rnafold2csv/rnafold2csv.py {input} > {output}"
 
-rule dustmasker:
-    input: realhairpins
-    output: realhairpins+"-dust"
-    shell: "dustmasker -in {output} -outfmt fasta -out {output} -level 15"
+#rule dustmasker:
+#    input: realhairpins
+ #   output: realhairpins+"-dust"
+  #  shell: "dustmasker -in {output} -outfmt fasta -out {output} -level 15"
 
-rule installPerlShuffle:
-	output: runshuffleinstall
-	shell: "PERL_MM_USE_DEFAULT=1 cpan Algorithm::Numerical::Shuffle > {output}"
-
-rule shuffleSeq:
-	input:
-		seq=realhairpins
-	output: 
-		seqshuffled
-	shell: "perl scripts/shuffle/genRandomRNA.pl -n 200 -m m < {input.seq} > {output}"
+#rule installPerlShuffle:
+#	output: runshuffleinstall
+#	shell: "PERL_MM_USE_DEFAULT=1 cpan Algorithm::Numerical::Shuffle > {output}"
+#
+#rule shuffleSeq:
+#	input:
+#		seq=realhairpins
+#	output: 
+#		seqshuffled
+#	shell: "perl scripts/shuffle/genRandomRNA.pl -n 200 -m m < {input.seq} > {output}"
       # m d z oder f
 
 

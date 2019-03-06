@@ -1,6 +1,7 @@
 library(stringr)
+library(seqinr)
 
-features_derived <- function(infile,out){
+features_derived <- function(infile){
 
   csvdf <- read.csv(infile, header = TRUE, sep = ",", stringsAsFactors = FALSE)
   
@@ -23,9 +24,13 @@ features_derived <- function(infile,out){
   mfeI4 <- csvdf[,"mfe"]/tot_bases
   dP <- tot_bases/length
   diff <- dG-NEFE
-  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG,diff)
-  # Writes Data Frame to a .csv file
-  write.csv(total, file=out, row.names=FALSE)
+  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei1=mfeI1,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG,diff)
 }
 
-features_derived("test.csv","testout.csv")
+if(exists("snakemake")){
+	total<-features_derived(snakemake@input[[1]])
+	write.csv(total, file=snakemake@output[[1]], row.names=FALSE)
+}else{
+	total<-features_derived("test.csv")
+	write.csv(total,file="testout.csv",row.names=FALSE)
+}
