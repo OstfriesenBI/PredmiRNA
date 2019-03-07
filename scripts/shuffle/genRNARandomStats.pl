@@ -96,7 +96,7 @@ while (my $line = <MFEFILE>) {
 	}
 	# Fasta Third Line i.e. RNA secondary structure and MFE
     elsif ($line =~ m/\)$/) {
-		$line =~ s/\( /\(/;
+		$line =~ s/\( +/\(/;
 		($astruct[$numSeqs], $amfe[$numSeqs]) = split(/ /, $line);
 		$amfe[$numSeqs] =~ s/[()]//g;
 		($aQ[$numSeqs], $aD[$numSeqs], $aBP[$numSeqs], $aSS[$numSeqs]) = rnaAnalysis($aseq[$numSeqs], length($aseq[$numSeqs]), $astruct[$numSeqs], $amfe[$numSeqs]);
@@ -132,7 +132,7 @@ while (my $line = <INFILE>) { # Read line by line.
 	# Fasta Third Line i.e. RNA secondary structure and MFE
         elsif ($line =~ m/\)$/) {
     	if ($numSeqs > $statsID) {
-			$line =~ s/\( /\(/;
+			$line =~ s/\( +/\(/;
 			($cstruct[$i], $cmfe[$i]) = split(/ /, $line);
 			$cmfe[$i] =~ s/[()]//g;
 
