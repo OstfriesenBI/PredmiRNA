@@ -24,7 +24,8 @@ inputgroups=["real_izmar","pseudo_izmar"]
 # Real miRNA has to contain "real"
 
 
-localrules: presentation, arff, splitfasta, mergecsv, mergefinalcsv, fasta2csv, joincsv
+localrules: presentation, arff, splitfasta, mergecsv, mergefinalcsv, fasta2csv, joincsv, buildJar, models
+
 
 
 #
@@ -233,6 +234,28 @@ rule mergefinalcsv:
         script:
                 "scripts/concatenateCsvs/concatenateCsvs.R"
 
+#rule dustmasker:
+#    input: realhairpins
+ #   output: realhairpins+"-dust"
+  #  shell: "dustmasker -in {output} -outfmt fasta -out {output} -level 15"
+
+#rule installPerlShuffle:
+#	output: runshuffleinstall
+#	shell: "PERL_MM_USE_DEFAULT=1 cpan Algorithm::Numerical::Shuffle > {output}"
+#
+
+
+
+
+##
+##
+## Learning Rules
+##
+##
+
+algs = {"j48":"weka.classifiers.trees.J48","bayes":"weka.classifiers.bayes.NaiveBayes","perceptron":"weka.classifiers.functions.MultilayerPerceptron",
+	"randomforest":"weka.classifiers.trees.RandomForest","randomtree":"weka.classifiers.trees.RandomTree","libsvm":"weka.classifiers.functions.LibSVM"}
+
 #
 # Generate .arff for Weka
 #
@@ -244,6 +267,51 @@ rule arff:
 	script:
 		"scripts/csv2arff/csv2arff.R"
 
+#
+# This rule builds the Java programs in the eclipseprojects folder
+#
+rule buildJar:
+	input:
+		"eclipseprojects/{program}"  # Project directory
+	output:
+		"bins/{program}.jar" # The jar file
+	shell:
+		"mvn -f {input}/pom.xml clean compile package 2>&1 && mv {input}/target/{wildcards.program}-0.0.1-SNAPSHOT-jar-with-dependencies.jar {output} && sleep 1"
+		# Use Maven to build the project to a fat jar
+def algtoclass(wildcards):
+	return algs[wildcards["alg"]]
+
+#
+# This rule trains the models
+#
+rule trainModel:
+	input:
+		program="bins/WekaTrainer.jar",
+		arff=rules.arff.output
+	output:
+		model= basedir+"/models/{alg}.ser",
+		thfile=basedir+"/models/threshold/{alg}.csv",
+		stdout=basedir+"/models/{alg}.log"
+	params:
+		alg=algtoclass
+	shell:
+		"java -jar {input.program} --input {input.arff} --classatt realmiRNA --seed 1 --folds 10 --outputclassifier {output.model} --thresholdfile {output.thfile} {params.alg} > {output.stdout}"
+#
+# This rule requests all models
+#
+rule models:
+	input: expand(rules.trainModel.output.model,alg=algs.keys())
+
+
+
+
+
+
+##
+##
+## Report Rules
+##
+##
 
 #
 # Generate the project presentation
@@ -256,16 +324,4 @@ rule presentation:
 		presentation=basedir+"/presentation.pptx"
 	script:
 		"presentation/projectpresentation.Rmd"
-
-
-
-#rule dustmasker:
-#    input: realhairpins
- #   output: realhairpins+"-dust"
-  #  shell: "dustmasker -in {output} -outfmt fasta -out {output} -level 15"
-
-#rule installPerlShuffle:
-#	output: runshuffleinstall
-#	shell: "PERL_MM_USE_DEFAULT=1 cpan Algorithm::Numerical::Shuffle > {output}"
-#
 

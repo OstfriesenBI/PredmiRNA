@@ -109,3 +109,5 @@ vignettes/*.pdf
 rsconnect/
 .vscode/settings.json
 .Rproj.user
+
+/bins/
