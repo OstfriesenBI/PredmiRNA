@@ -29,7 +29,7 @@ def main(argv):
 	outputfile = argv[1]
 	with open(outputfile,'w') as ofile:
 		with open(inputfile) as ifile:
-			print('"comment","sequence","mfesecstructure","mfe","basepairprobs","efe","centroidsecstructure","centroidmfe","ensembledistance","freqmfestruct","ensemblediversity"',file=ofile)
+			print('"comment","sequence_nodm","mfesecstructure","mfe","basepairprobs","efe","centroidsecstructure","centroidmfe","ensembledistance","freqmfestruct","ensemblediversity"',file=ofile)
 			for commentline in ifile:
 				# Read the required lines:
 				comment=cleanstring(commentline).replace(">","") # Just remove the first char, this may go badly, you watch...

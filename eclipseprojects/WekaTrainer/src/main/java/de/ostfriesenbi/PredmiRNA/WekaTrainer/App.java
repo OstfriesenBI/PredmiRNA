@@ -7,6 +7,10 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
@@ -28,10 +32,12 @@ import weka.classifiers.evaluation.output.prediction.CSV;
 import weka.classifiers.evaluation.output.prediction.HTML;
 import weka.classifiers.meta.AttributeSelectedClassifier;
 import weka.core.Attribute;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializationHelper;
 import weka.core.Utils;
 import weka.core.converters.CSVSaver;
+import weka.core.converters.ConverterUtils;
 import weka.core.converters.ConverterUtils.DataSource;
 
 @Command(description="Trains and evaluates a model using the given algorithm",name="WekaTrainer",mixinStandardHelpOptions=true,version="WekaTrainer 0.1")

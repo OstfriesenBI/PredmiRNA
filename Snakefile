@@ -8,10 +8,9 @@ noofsplits=4
 
 # Paths
 basedir = config["datadir"] # Where to store the generated datafiles
-unafoldbin
 
 # Randfold Shuffling options
-shufflelist=[20,100] # Number of permutations to try 
+shufflelist=[20] # Number of permutations to try 
 shufflemethods=["m","d","z","f"] # Method to generate the permutations
 # m, mononucleotide shuffling; d, dinucleotide shuffling; z, zero-order markov model; f, first-order markov model
 
