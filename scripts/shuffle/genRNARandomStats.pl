@@ -44,6 +44,7 @@ my @cQ;
 my @cD;
 my @cBP;
 my @cSS;
+my @comments;
 
 ############################################################################
 # File IO
@@ -60,7 +61,7 @@ foreach my $a (0..$#ARGV) {
 	}
 	elsif ($ARGV[$a] eq "-o") {	
 		$outFile = ($ARGV[$a+1] eq "") ? "&STDOUT" : $ARGV[$a+1];
-		printf(STDERR "$outFile\n");
+		#printf(STDERR "$outFile\n");
 		if ( -e $outFile) {
 			open (OUTFILE, "<$outFile") or die( "Cannot open input file $outFile: $!" );
 			while (my $line = <OUTFILE>) {
@@ -89,7 +90,10 @@ open (MFEFILE, "<$mfeFile") or die( "Cannot open input file $mfeFile: $!" );
 $numSeqs = 0;
 while (my $line = <MFEFILE>) {
 	chomp($line);
-	if ($line =~ m/^>/) { }
+	if ($line =~ m/^>/) { 
+                $comments[$numSeqs] = $line;
+                $comments[$numSeqs] =~ s/^>//g;
+	}
 	
 	elsif ($line =~ m/^[AaCcUuGg]/) {
 		$aseq[$numSeqs] = $line;
@@ -111,18 +115,20 @@ close (MFEFILE) or die( "Cannot close input file $mfeFile: $!" );
 
 open (OUTFILE, ">$outFile") or die ("Cannot open output file $outFile: $!");
 print (OUTFILE "ID");
-print (OUTFILE "\tX\tRMean\tRSD\tZ\tP-MFE\tP-Z");
-print (OUTFILE "\tX\tRMean\tRSD\tZ\tP-Q\tP-Z");
-print (OUTFILE "\tX\tRMean\tRSD\tZ\tP-D\tP-Z");
-print (OUTFILE "\tX\tRMean\tRSD\tZ\tP-PB\tP-Z");
-print (OUTFILE "\tX\tRMean\tRSD\tZ\tP-TD\tP-Z");
+print (OUTFILE "\tX_MFE\tRMean_MFE\tRSD_MFE\tZ_MFE\tP_MFE\tP_Z_MFE");
+print (OUTFILE "\tX_Q\tRMean_Q\tRSD_Q\tZ_Q\tP_Q\tP_Z_Q");
+print (OUTFILE "\tX_D\tRMean_D\tRSD_D\tZ_D\tP_D\tP_Z_D");
+print (OUTFILE "\tX_PB\tRMean_PB\tRSD_PB\tZ_PB\tP_PB\tP_Z_PB");
+print (OUTFILE "\tX_TD\tRMean_TD\tRSD_TD\tZ_TD\tP_TD\tP_Z_TD");
+print(OUTFILE "\tcomment");
 map { print (OUTFILE "\n$_"); } @templines; 
 
 my $i = 0; #index for $numRandomSeqs
 $numSeqs = 0;
 while (my $line = <INFILE>) { # Read line by line.
 	chomp($line);
-	if ($line =~ m/^>/) { }
+	if ($line =~ m/^>/) {
+	}
 	
 	elsif ($line =~ m/^[AaCcUuGg]/) {
 		 
@@ -166,6 +172,7 @@ while (my $line = <INFILE>) { # Read line by line.
 				($mean, $sd, $z, $p) = computeTreeStats(\@cedit_distance, $aedit_distance_mean);
 				$pz = 0.0;
 				printf (OUTFILE "\t%.2f\t%.4f\t%.4f\t%s\t%.4f\t%s", $aedit_distance_mean, $mean, $sd, $z, $p, $pz);
+				printf(OUTFILE "\t%s", $comments[$numSeqs]);
 			}
 			$i = 0;	
 			$numSeqs++;			

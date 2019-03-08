@@ -51,17 +51,24 @@ print (OUTFILE map { "\%$_\t" } (sort keys(%gl_dimers)));
 print (OUTFILE "pb\tNpb\t");
 print (OUTFILE "mfe\tNmfe\t");
 print (OUTFILE "Q\tNQ\t");
-print (OUTFILE "D\tND\t");
+print (OUTFILE "D\tND\tcomment\t");
 
 # Read line by line.
-while (my $line = uc(<INFILE>)) {
+my $comment="??";
+while (my $line = <INFILE>) {
 
 	chomp($line);
-	$line =~ s/T/U/g;
 	
+	if($line =~ m/^[AaCcTtGg]/){
+		$line =~ s/T/U/g;
+		$line =~ s/t/u/g;
+	}
+
 	# Fasta First Line
-    if ($line =~ m/^>/) { }
-    
+    if ($line =~ m/^>/) {
+		$comment="$line";
+		$comment =~ s/^>//g;
+	}
     # Fasta Second Line i.e. RNA sequence
     elsif ($line =~ m/^[AaCcUuGg]/) {	    
 
@@ -73,6 +80,8 @@ while (my $line = uc(<INFILE>)) {
 
 		#remove white space etc
 		$line =~ s/[^AaCcUuGg]//g;
+
+		$line = uc($line);
 
 		my $seqLen = length($line);
 		print(OUTFILE "\n$numseqs\t$seqLen\t");
@@ -116,6 +125,7 @@ while (my $line = uc(<INFILE>)) {
 		printf(OUTFILE "%.2f\t%.4f\t", $mfe, $mfe/$seqLen);
 		printf(OUTFILE "%.2f\t%.4f\t", $Q, $Q/$seqLen);
 		printf(OUTFILE "%.2f\t%.4f\t", $D, $D/$seqLen);
+		print(OUTFILE "$comment\t");
 
     }
 	

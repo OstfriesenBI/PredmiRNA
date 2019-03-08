@@ -6,14 +6,18 @@ library(Biostrings)
 fasta2csv <- function(in_path, out_path, realmiRNA) {
 
     # Uses the function readRNAStringSet from Biostrings on given fasta file (in_path)
-    fastaFile <- readRNAStringSet(in_path)
+    fastaFile <- readBStringSet(in_path)
 
     # Assings the name and the sequence from the fasta file to a variable
     comment = names(fastaFile)
     sequence = paste(fastaFile)
-
+    
+    lowercase = sapply(regmatches(sequence, gregexpr("[a-z]", sequence, perl=TRUE)), length)
+    lengths = sapply(sequence,nchar)
+    lowcomplexity = (lowercase/lengths)
+    
     # Creates a data frame
-    df <- data.frame(comment, sequence, realmiRNA)
+    df <- data.frame(comment, sequence, realmiRNA,lowcomplexity)
     
     # Writes the data frame to csv file to given path without extra row names
     write.csv(df,out_path,row.names=FALSE)

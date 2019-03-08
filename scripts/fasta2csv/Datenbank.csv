@@ -1,3 +1,3 @@
-"seq_name","sequence","realmiRNA"
-"mmu-mir-380 MI0000797 Mus musculus miR-380 stem-loop","AAGAUGGUUGACCAUAGAACAUGCGCUACUUCUGUGUCGUAUGUAGUAUGGUCCACAUCUU",1
-"mmu-mir-381 MI0000798 Mus musculus miR-381 stem-loop","UACUUAAAGCGAGGUUGCCCUUUGUAUAUUCGGUUUAUUGACAUGGAAUAUACAAGGGCAAGCUCUCUGUGAGUA",1
+"comment","sequence","realmiRNA","lowcomplexity"
+"mmu-mir-380 MI0000797 Mus musculus miR-380 stem-loop","AAGAUGGUUGACCAUAaaaaaaaaaaaaUACUUCUGUGUCGUAUGUAGUAUGGUCCACAUCUU",1,0.19047619047619
+"mmu-mir-381 MI0000798 Mus musculus miR-381 stem-loop","augucgucgugagugcguguuuuugggggcccca",1,1
