@@ -1,0 +1,6 @@
+
+MFE (minimum free energy)
+-es wird nach thermodynamisch stabilden Strukturen gesucht
+-dafür werden die Energien für jede vorhergesagte Struktur berechnet
+indem die negativen Basenstapelkräfte summiert werden.
+
