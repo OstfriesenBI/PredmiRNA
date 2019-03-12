@@ -18,6 +18,7 @@ bibliography: bibliography.bib
 library(ggplot2)
 library(foreign)
 library(gridExtra)
+knitr::opts_chunk$set(fig.pos = "h")
 knitr::opts_chunk$set(echo = FALSE)
 featplot <- function(featname){
   df <- read.arff("2018-2-11-1-20-56.arff");
@@ -130,6 +131,8 @@ grid.arrange(mfe, gc, mfei1,layout_matrix=rbind(c(1,2),c(3,3)))
 # Verwendete Tools
 
 ## GitHub
+![](resources/Octocat.png)
+
 https://github.com/OstfriesenBI/PredmiRNA
 
 - Öffentliche einsehbare Git Repos
@@ -138,6 +141,9 @@ https://github.com/OstfriesenBI/PredmiRNA
 - Reproduktion: git clone, snakemake report, DONE!
 
 ## Snakemake
+
+![](resources/snakemake_logo.svg)
+
 - Snakemake ist ein auf Python basierendes Workflow-Management-Tool
 - Ein Workflow beinhaltet ein Satz an Regeln
 - Eine Regel ist eine Beschreibung, wie aus einem Input-File ein Output-File zu erzeugen ist
@@ -159,7 +165,8 @@ rule parsernafold:
 	script: "scripts/rnafold2csv/rnafold2csv.py"
 ```
 
-## WeKa
+## WeKa 
+![](resources/Weka_(software)_logo.png)
 
 - Sammlung von ML Algorithmen für Data Mining Augaben
 - Die Algorithmen können entweder direkt auf die Daten angewendet werden oder in einem Java Programm aufgrufen werden
@@ -168,6 +175,8 @@ rule parsernafold:
 
 ## Python
 
+![](resources/python.png)
+
 - Intepretierte, High-Level, Allzweck-Programmiersprache
 - Readability
 - Genutzt für: Web development, software development, mathematics, system scripting
@@ -175,10 +184,16 @@ rule parsernafold:
 - Benutzt neue Linien anstelle von z.B. Semikolons
 
 ## R
+
+![](resources/R_logo.png)
+
 - Programmiersprache und kostenlose Software Enviroment für statistische Berechnungen und Grafiken 
 - Wird benutzt von Statistiker und Data Miner um statistische Software und Daten Analysen zu entwickeln
 
 ## Conda
+
+![](resources/Anaconda_Logo.png)
+
 - Problem in der Bioinformatik: Viele Tools, die von verschiedenen Libraries/anderen Tools abhängen
 - Conda ist ein Packagemanager vergleichbar wie apt, aber versatiler als pip
 
