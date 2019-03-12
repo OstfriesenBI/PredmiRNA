@@ -3,9 +3,11 @@ title: "PredmiRNA"
 author: "Bo Zheng, Marius Rüve, Filip Mazug, Lukas Jansen"
 date: "`r format(Sys.Date())`"
 output: 
-   powerpoint_presentation:
+   revealjs::revealjs_presentation:
     toc: true
-    reference_doc:  template.pptx
+    theme:  league
+bibliography: bibliography.bib
+    
 ---
 
 ```{r setup, include=FALSE}
@@ -17,11 +19,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Micro RNA
 
-- Kleines, nicht codierendes RNA Molekül, welches man in 
+- Kleines, **nicht codierendes** RNA Molekül, welches man in 
 - In Pflanzen, Tieren oder Viren vorzufinden
-- Ca. 22 Nukleotide groß
-- Lagert sich an komplementäre messenger RNA --> posttranskriptionale Regulation der Genexpression
-  - Verhindert die Anlagerung an die Ribosomen --> keine Proteinbiosynthese
+- Ca. *22 Nukleotide* groß
+- Lagert sich an komplementäre messenger RNA: **posttranskriptionale Regulation der Genexpression**
+- Verhindert die Anlagerung an die Ribosomen: **keine Proteinbiosynthese** 
+  
+[@stanley]
 
 ## Motivation
 
@@ -41,7 +45,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Phasen
 
-## Phase 1
+## Phase 1 - Done
 
 - Vorbereitung der Features
   - Inhalt/ Aussage der einzelnen Features
@@ -50,13 +54,13 @@ knitr::opts_chunk$set(echo = FALSE)
   - Mögliche Tools zur Vereinfachung
 - Schreiben der einzelnen Skripte für die Features
 
-## Phase 2
+## Phase 2 - Done
 
 - Einbindung der Skripte in den Workflow (Snakemake)
   - Testdaten --> Ergebnisse der einzelnen Features
 - Visualisierung der Daten
 
-## Phase 3
+## Phase 3 - WIP
 
 - Java/ R/ Python Programm, welches in WEKA verschiedenen Modelle trainiert und auswertet
 - Lulu hilf uns ! plz 
@@ -65,7 +69,7 @@ knitr::opts_chunk$set(echo = FALSE)
 # RNAFold & Feature Beispiele
 
 ## RNAFold
-
+ghgh
 
 
 ## Bsp1
@@ -77,13 +81,19 @@ Erklärung + Bilder
 
 # Erklärung der Tools und Vorgehensweise
 
-## Snakemake
+## GitHub
+- Öffentliche einsehbare Git Repos
+- Tooling mit Web GUI and Issue Tracker z. B.
+- GitHub Profil als Portofolio eines Entwicklers
+- Reproduktion: git clone, snakemake report, DONE!
 
+## Snakemake
 - Snakemake ist ein auf Python basierendes Workflow-Management-Tool
 - Ein Workflow beinhaltet ein Satz an Regeln
 - Eine Regel ist eine Beschreibung, wie aus einem Input-File ein Output-File zu erzeugen ist
 - Dadurch können Ergebnisse von einem Skript an ein anderes weitergegeben werden
-BILD ZU VISUALISIERUNG
+
+[@snakemake]
 
 ## WeKa
 
@@ -100,15 +110,14 @@ BILD ZU VISUALISIERUNG
 - Benutzt neue Linien anstelle von z.B. Semikolons
 
 ## R
-
 - Programmiersprache und kostenlose Software Enviroment für statistische Berechnungen und Grafiken 
 - Wird benutzt von Statistiker und Data Miner um statistische Software und Daten Analysen zu entwickeln
 
-## Perl
+## Conda
+- Problem in der Bioinformatik: Viele Tools, die von verschiedenen Libraries/anderen Tools abhängen
+- Conda ist ein Packagemanager vergleichbar wie apt, aber versatiler als pip
 
 ## Vorgehensweise
 
-## I found my new favourite toy
-![I love this](https://i.imgur.com/DktJUwl.gif)
-
+## References {.allowframebreaks} 
 
