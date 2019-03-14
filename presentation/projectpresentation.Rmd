@@ -8,6 +8,7 @@ output:
     self_contained: TRUE
     fig_caption: TRUE
     center: TRUE
+    highlight: kate
     reveal_options:
       slideNumber: true
 bibliography: bibliography.bib
@@ -31,8 +32,7 @@ featplot <- function(featname){
 
 ## Micro RNA
 
-- Kleines, **nicht codierendes** RNA Molekül, welches man in 
-- In Pflanzen, Tieren oder Viren vorzufinden
+- Kleines, **nicht codierendes** RNA Molekül, welches man in Pflanzen, Tieren und Viren findet
 - Ca. *22 Nukleotide* groß
 - Lagert sich an komplementäre messenger RNA: **posttranskriptionale Regulation der Genexpression**
 - Verhindert die Anlagerung an die Ribosomen: **keine Proteinbiosynthese** 
@@ -41,11 +41,11 @@ featplot <- function(featname){
 
 ## Motivation
 
-- Micro RNAs (**miRNA**) als Herz von Biochips
+- Micro RNAs (**miRNA**) als Kern von Biochips
    - Vorhersage von Lungenkrebs und MS! [@mirnadiag]
 - Bestimmte miRNAs wirken **krebsfördernd** (oncomiRs) [@Kooshapur2018]
-- Daher ML als Ansatz zur Erkennung von *echten* pre-miRNA Kandidaten
-- Ziel: Ein Klassifikationsmodell für die pre-miRNA Kandidaten zu erstellen und **sinnvolle** Features auswählen 
+- Problem: Erkennung von *echten* pre-miRNA Kandidaten
+- Ziel: Ein Klassifikationsmodell für die pre-miRNA Kandidaten zu erstellen und **sinnvolle** Features auszuwählen 
 
 ## Machine Learning
 
@@ -59,6 +59,17 @@ featplot <- function(featname){
 
 # Projektphasen
 
+## GitHub
+![](resources/Octocat.png)
+
+https://github.com/OstfriesenBI/PredmiRNA
+
+- Öffentliche einsehbare Git Repos
+- Tooling mit Web GUI and Issue Tracker z. B.
+- GitHub Profil als Portofolio eines Entwicklers
+- Reproduktion: `sh git clone` & `sh snakemake report`
+
+
 ## Phase 1 - Done
 
 - Vorbereitung der Features
@@ -71,7 +82,7 @@ featplot <- function(featname){
 ## Phase 2 - (almost) Done
 
 - Einbindung der Skripte in den Workflow (Snakemake)
-  - Testdaten -> Ergebnisse der einzelnen Features
+  - Sequenzen -> Ergebnisse der einzelnen Features
 - Visualisierung der Daten
 
 ## Phase 3 - WIP
@@ -104,7 +115,7 @@ Wird zu
 .))))))))))))))))).)).))))
 ```
 ---
-![hsa-mir-19a](examplefold.png)
+![hsa-mir-19a](resources/examplefold.png)
 
 ## Dichteverteilung der MFE
 ```{r mfe, eval=T, echo=F}
@@ -130,25 +141,41 @@ grid.arrange(mfe, gc, mfei1,layout_matrix=rbind(c(1,2),c(3,3)))
 
 # Verwendete Tools
 
-## GitHub
-![](resources/Octocat.png)
+## Conda
 
-https://github.com/OstfriesenBI/PredmiRNA
+![](resources/Anaconda_Logo.png)
 
-- Öffentliche einsehbare Git Repos
-- Tooling mit Web GUI and Issue Tracker z. B.
-- GitHub Profil als Portofolio eines Entwicklers
-- Reproduktion: git clone, snakemake report, DONE!
+- Problem in der Bioinformatik: Viele Tools, die von verschiedenen Libraries/anderen Tools abhängen
+- Conda ist ein Packagemanager vergleichbar wie apt, aber versatiler als pip
+
+## Python
+
+![](resources/python.png)
+
+- Intepretierte, High-Level, Allzweck-Programmiersprache
+- Readability
+- Genutzt für: Web development, software development, mathematics, system scripting
+- Einfache Syntax ähnlich zur englischen Sprache
+- Benutzt neue Linien anstelle von z.B. Semikolons
+
+## R
+
+![](resources/R_logo.png)
+
+- Programmiersprache und kostenlose Software Enviroment für statistische Berechnungen und Grafiken 
+- Wird benutzt von Statistikern und Data Minern um statistische Software und Daten Analysen zu entwickeln
+
 
 ## Snakemake
 
 ![](resources/snakemake_logo.svg)
 
 - Snakemake ist ein auf Python basierendes Workflow-Management-Tool
-- Ein Workflow beinhaltet ein Satz an Regeln
-- Eine Regel ist eine Beschreibung, wie aus einem Input-File ein Output-File zu erzeugen ist
-- Dadurch können Ergebnisse von einem Skript an ein anderes weitergegeben werden
+- Ein Workflow beinhaltet einen Satz an Regeln
+- Eine Regel ist eine Beschreibung, wie aus Input-Files Output-Files zu erzeugen sind
+- Dadurch können Ergebnisse von einem Programm an ein anderes weitergegeben werden
 - Erweiterung des Python Syntaxes
+
 [@snakemake]
 
 ## Beispiel Regeln
@@ -169,38 +196,34 @@ rule parsernafold:
 ![](resources/Weka_(software)_logo.png)
 
 - Sammlung von ML Algorithmen für Data Mining Augaben
-- Die Algorithmen können entweder direkt auf die Daten angewendet werden oder in einem Java Programm aufgrufen werden
+- Die Algorithmen können entweder direkt auf die Daten angewendet werden oder in einem Java Programm aufgrufen
 -  Weka beinhaltet Tools zur Daten-Vorbereitung, Klassifizierung, Regression, Clustering und Visualisierung
+
 [@weka]
 
-## Python
 
-![](resources/python.png)
 
-- Intepretierte, High-Level, Allzweck-Programmiersprache
-- Readability
-- Genutzt für: Web development, software development, mathematics, system scripting
-- Einfache Syntax ähnlich zur englischen Sprache
-- Benutzt neue Linien anstelle von z.B. Semikolons
-
-## R
-
-![](resources/R_logo.png)
-
-- Programmiersprache und kostenlose Software Enviroment für statistische Berechnungen und Grafiken 
-- Wird benutzt von Statistiker und Data Miner um statistische Software und Daten Analysen zu entwickeln
-
-## Conda
-
-![](resources/Anaconda_Logo.png)
-
-- Problem in der Bioinformatik: Viele Tools, die von verschiedenen Libraries/anderen Tools abhängen
-- Conda ist ein Packagemanager vergleichbar wie apt, aber versatiler als pip
 
 # Vorläufige Ergebnisse
 
 ## Snakemake Workflow
-![Der aktuelle Workflow](dag.png)
+![Der aktuelle Workflow](resources/dag.png)
 
-## References {.allowframebrakes}
+## Literatur 1
 
+Hall, Mark, Eibe Frank, Geoffrey Holmes, Bernhard Pfahringer, Peter Reutemann, and Ian H. Witten. 2009. “The WEKA Data Mining Software.” ACM SIGKDD Explorations Newsletter 11 (1): 10. https://doi.org/10.1145/1656274.1656278.
+Hofacker, I. L. 2003. “Vienna RNA Secondary Structure Server.” Nucleic Acids Research 31 (13): 3429–31. https://doi.org/10.1093/nar/gkg599.
+
+Kooshapur, Hamed, Nila Roy Choudhury, Bernd Simon, Max Mühlbauer, Alexander Jussupow, Noemi Fernandez, Alisha N. Jones, et al. 2018. “Structural Basis for Terminal Loop Recognition and Stimulation of Pri-miRNA-18a Processing by hnRNP A1.” Nature Communications 9 (1). https://doi.org/10.1038/s41467-018-04871-9.
+
+## Literatur 2
+
+Köster, Johannes, and Sven Rahmann. 2018. “Snakemake—a scalable bioinformatics workflow engine.” Bioinformatics 34 (20): 3600–3600. https://doi.org/10.1093/bioinformatics/bty350.
+
+Ng, Kwang Loong Stanley, and Santosh K. Mishra. 2007. “De novo SVM classification of precursor microRNAs from genomic pseudo hairpins using global and intrinsic folding measures.” Bioinformatics 23 (11): 1321–30. https://doi.org/10.1093/bioinformatics/btm026.
+
+## Literatur 3
+
+Stähler, Peer. 2010. “Molekulare Diagnoseverfahren: miRNA-Biomarker im Blut.” Dtsch Arztebl International 107 (10): A–454 –. http://www.aerzteblatt.de/int/article.asp?id=68103.
+
+## <ignore me>
