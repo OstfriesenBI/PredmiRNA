@@ -70,8 +70,8 @@ featplot <- function(featname){
 
 https://github.com/OstfriesenBI/PredmiRNA
 
-- Öffentliche einsehbare Git Repos
-- Git Repositories mit Web GUI, Issue Tracker etc.
+- Öffentliche einsehbare Git Repositories(Repos)
+- Web GUI, Issue Tracker, Team Collaboration etc.
 - GitHub Profil als Portofolio eines Entwicklers
 - Reproduktion: `git clone` & `snakemake --use-conda report`
 
@@ -94,7 +94,9 @@ https://github.com/OstfriesenBI/PredmiRNA
 ## Phase 3 - WIP
 
 - Training der Modelle zeigt ein Overfitting
-- Dimensionsreduktion für die Features durchführen
+  - Modelle zeigen **90%** Richtigkeit (Accuracy) bei *10-Faltung* Kreuzvalidierung und einer geschichteten Zufallsstichprobe mit je 1500 Sequenzen 
+  - Modelle gewichten biologisch unsinnige Features wie Standardabweichung von 3 verschieden erstellten Permutationen 
+- -> **Dimensionsreduktion** durchführen
 - Schreiben eines Reports
 
 
