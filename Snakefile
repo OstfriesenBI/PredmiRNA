@@ -48,6 +48,7 @@ rule splitfasta:
 	params:
 		splits=noofsplits,
 		outputdir=directory(basedir+"/{inputgroup}/split/")
+	conda: "envs/rnafold.yaml"
 	shell:
 		"fastasplit -f {input} -o {params.outputdir} -c {params.splits}"
 #
@@ -59,6 +60,7 @@ rule joincsv:
 		expand(basedir+"/{{inputgroup}}/stanley/{{index}}-{method}-{shuffles}.csv",method=shufflemethods,shuffles=shufflelist) 
 	output:
 		basedir+"/{inputgroup}/split-{index}.csv"
+	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/csvmerge/csvmerge.R"
 
@@ -70,6 +72,7 @@ rule mergecsv:
 		csvs=expand(basedir+"/{{inputgroup}}/split-{index}.csv",index=splitindices)
 	output:
 		csv=basedir+"/{inputgroup}/combined.csv"
+	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/concatenateCsvs/concatenateCsvs.R"
 #
@@ -80,6 +83,7 @@ rule mergefinalcsv:
                 csvs=expand(rules.mergecsv.output.csv,inputgroup=inputgroups)
         output:
                 csv=basedir+"/all.csv"
+	conda: "envs/rnafold.yaml"
         script:
                 "scripts/concatenateCsvs/concatenateCsvs.R"
 
@@ -99,10 +103,9 @@ rule fold:
 		basedir+"/{inputgroup}/split/{inputgroup}.fasta_chunk_{index}"
 	output:
 		basedir+"/{inputgroup}/fold/{index}.fold"
-	conda: 
-		"envs/rnafold.yaml"
 	shadow:
 		"shallow" # Run it in an isolated enviroment, spams postscript files
+	conda: "envs/rnafold.yaml"
 	shell:
 		"RNAfold --noPS -p < {input} > {output}"
 #
@@ -113,6 +116,7 @@ rule parsernafold:
 		rules.fold.output
 	output:
 		basedir+"/{inputgroup}/datasplit/{index}.fold.csv"
+	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/rnafold2csv/rnafold2csv.py"
 fastachunk=basedir+"/{inputgroup}/split/{inputgroup}.fasta_chunk_{index}"
@@ -124,6 +128,7 @@ rule stanleyRNAstats:
 		fastachunk
 	output:
 		stats=basedir+"/{inputgroup}/stanley/{index}.stats"
+	conda: "envs/rnafold.yaml"
 	shell:
 		"perl scripts/shuffle/genRNAStats.pl -i {input} -o {output.stats}"
 #
@@ -134,21 +139,32 @@ rule parsestnlyfeatures:
 		shuffledstatfiles=rules.stanleyRNAstats.output.stats
 	output:
 		basedir+"/{inputgroup}/datasplit/{index}.stnley.csv"
+	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/shuffle/parseRNAStats.R"
+#
+# Install the shuffle module for perl
+#
+rule installPerlShuffle:
+       output: basedir+"/perlinstall.log"
+       conda: "envs/rnafold.yaml"
+       shell: "PERL_MM_USE_DEFAULT=1 cpan install Algorithm::Numerical::Shuffle > {output}"
+
 #
 # Shuffle the sequences
 #
 rule snuffleshuffel:
 	input:
-		fastachunk
+		rules.installPerlShuffle.output,
+		f=fastachunk
 	output:
 		basedir+"/{inputgroup}/stanley/shuffled/{index}-{method}-{shuffles}.fasta"
 	params:
 		method="{method}",
 		shuffles="{shuffles}"
+	conda: "envs/rnafold.yaml"
 	shell:
-		"perl scripts/shuffle/genRandomRNA.pl -n {params.shuffles} -m {params.method} < {input} > {output}"
+		"perl scripts/shuffle/genRandomRNA.pl -n {params.shuffles} -m {params.method} < {input.f} > {output}"
 #
 # Fold the shuffled sequences
 #
@@ -157,6 +173,7 @@ rule foldshuffled:
 		rules.snuffleshuffel.output
 	output:
 		basedir+"/{inputgroup}/stanley/shuffled/{index}-{method}-{shuffles}.fold"
+	conda: "envs/rnafold.yaml"
 	shell:
 		"RNAfold --noPS < {input} > {output}"
 #
@@ -170,6 +187,7 @@ rule stnlyRandfeatures:
 		stats=basedir+"/{inputgroup}/stanley/{index}-{method}-{shuffles}.stats"
 	params:
 		shuffles="{shuffles}"
+	conda: "envs/rnafold.yaml"
 	shell:
 		"perl scripts/shuffle/genRNARandomStats.pl -n {params.shuffles} -i {input.shuffled} -m {input.unshuffled} -o {output.stats}"
 
@@ -181,6 +199,7 @@ rule parsestnlyRandfeatures:
 		shuffledstatfiles=rules.stnlyRandfeatures.output.stats
 	output:
 		stats=basedir+"/{inputgroup}/stanley/{index}-{method}-{shuffles}.csv"
+	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/shuffle/parseRNARandom.R"
 
@@ -192,6 +211,7 @@ rule RNAspectral:
 		rules.fold.output
 	output:
 		basedir+"/{inputgroup}/stanley/{index}.spectral"
+	conda: "envs/rnafold.yaml"
 	shell:
 		# Clean the additional information
 		"grep --invert-match '[]}}]$\| frequ' {input} | scripts/shuffle/RNAspectral.exe > {output}"
@@ -204,6 +224,7 @@ rule parseRNAspectral:
 		fastasource=rules.fold.input
 	output:
 		basedir+"/{inputgroup}/datasplit/{index}.spectral.csv"
+	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/shuffle/parseRNAspectral.R"
 
@@ -225,6 +246,7 @@ rule dustmasker:
 		fastachunk
 	output:
 		fastachunk+"_dm"
+	conda: "envs/rnafold.yaml"
 	shell:
 		"dustmasker -in {input} -outfmt fasta -out {output} -level 15"
 #
@@ -237,13 +259,10 @@ rule fasta2csv:
 		basedir+"/{inputgroup}/datasplit/{index}.seq.csv"
 	params:
 		realmarker="real"
+	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/fasta2csv/fasta2csv.R"
 
-#rule installPerlShuffle:
-#	output: runshuffleinstall
-#	shell: "PERL_MM_USE_DEFAULT=1 cpan Algorithm::Numerical::Shuffle > {output}"
-#
 
 ##
 ##
@@ -262,6 +281,7 @@ rule arff:
 		rules.mergefinalcsv.output.csv
 	output:
 		basedir+"/all.arff"
+	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/csv2arff/csv2arff.R"
 
@@ -273,6 +293,7 @@ rule buildJar:
 		"eclipseprojects/{program}"  # Project directory
 	output:
 		"bins/{program}.jar" # The jar file
+	conda: "envs/rnafold.yaml"
 	shell:
 		"mvn -f {input}/pom.xml clean compile package 2>&1 && mv {input}/target/{wildcards.program}-0.0.1-SNAPSHOT-jar-with-dependencies.jar {output} && sleep 1"
 		# Use Maven to build the project to a fat jar
@@ -292,6 +313,7 @@ rule trainModel:
 		stdout=basedir+"/models/{alg}.log"
 	params:
 		alg=algtoclass
+	conda: "envs/rnafold.yaml"
 	shell:
 		"java -jar {input.program} --input {input.arff} --classatt realmiRNA --seed 1 --folds 10 --outputclassifier {output.model} --thresholdfile {output.thfile} {params.alg} > {output.stdout}"
 #
@@ -316,10 +338,10 @@ rule models:
 #
 rule presentation:
 	input:
-		template="presentation/template.pptx",
 		finalcsv=rules.mergefinalcsv.output.csv
 	output:
-		presentation=basedir+"/presentation.pptx"
+		presentation=basedir+"/presentation.html"
+	conda: "envs/rnafold.yaml"
 	script:
 		"presentation/projectpresentation.Rmd"
 

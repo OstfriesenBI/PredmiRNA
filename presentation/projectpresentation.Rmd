@@ -21,8 +21,14 @@ library(foreign)
 library(gridExtra)
 knitr::opts_chunk$set(fig.pos = "h")
 knitr::opts_chunk$set(echo = FALSE)
+
+if(exists("snakemake")){
+  df=read.csv(snakemake@input["finalcsv"])
+}else{
+  df=read.arff("2018-2-11-1-20-56.arff")
+}
+
 featplot <- function(featname){
-  df <- read.arff("2018-2-11-1-20-56.arff");
   plot <-ggplot(df, aes_string(x=featname, fill="class",color="class"))+geom_density(alpha=0.4)+ggtitle(featname)
   return(plot)
 }
@@ -178,20 +184,6 @@ grid.arrange(mfe, gc, mfei1,layout_matrix=rbind(c(1,2),c(3,3)))
 
 [@snakemake]
 
-## Beispiel Regeln
-``` python
-rule fold:
-	input: basedir+"/{ingroup}/split/{ingroup}.fasta_chunk_{index}"
-	output:	basedir+"/{ingroup}/fold/{index}.fold"
-	conda: "envs/rnafold.yaml"
-	shadow:	"shallow" # Run in temp dir, copy results
-	shell: "RNAfold --noPS -p < {input} > {output}"
-rule parsernafold:
-	input: rules.fold.output
-	output: basedir+"/{ingroup}/datasplit/{index}.fold.csv"
-	script: "scripts/rnafold2csv/rnafold2csv.py"
-```
-
 ## WeKa 
 ![](resources/Weka_(software)_logo.png)
 
@@ -204,7 +196,28 @@ rule parsernafold:
 
 
 
-# Vorläufige Ergebnisse
+# Anhang
+
+## Beispiel Regeln
+``` python
+rule fold:
+	input:
+		basedir+"/{inputgroup}/split/{inputgroup}.fasta_chunk_{index}"
+	output:
+		basedir+"/{inputgroup}/fold/{index}.fold"
+	shadow:
+		"shallow" # Run it in an isolated enviroment
+	conda: "envs/rnafold.yaml"
+	shell:
+		"RNAfold --noPS -p < {input} > {output}"
+rule parsernafold:
+	input:
+		rules.fold.output
+	output:
+		basedir+"/{inputgroup}/datasplit/{index}.fold.csv"
+	script:
+		"scripts/rnafold2csv/rnafold2csv.py"
+```
 
 ## Snakemake Workflow
 ![Der aktuelle Workflow](resources/dag.png)

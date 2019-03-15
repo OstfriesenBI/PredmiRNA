@@ -1,7 +1,20 @@
 name: rnafold
 channels:
   - bioconda
+  - r
+  - conda-forge
 dependencies:
-  - viennarna=2.4.9
-  - randfold=2.0.1
-  - perl-bioperl=1.7.2
+  - viennarna
+  - randfold
+  - perl-bioperl=>1.7.2
+  - exonerate
+  - r-seqinr
+  - python
+  - grep
+  - r-stringr
+  - blast
+  - bioconductor-biostrings
+  - maven
+  - r-ggplot2
+  - r-foreign
+  - r-gridextra
