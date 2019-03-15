@@ -59,9 +59,9 @@ featplot <- function(featname){
   - Möglichkeit des **Lernens** anhand von Testdaten
 - Verschiedene Machine Learning (ML) Methoden:
   - *Supervised ML*:
-    - Alle Ergebnisse der Daten eines Testdatensatzes sind gegeben
+    - Alle Zielwerte der Daten eines Testdatensatzes sind gegeben und der Algorithmus lernt anhand dieser die Struktur
   - *Unsupervised ML*:
-    - Hier sind die Ergebnisse für die Testdaten nicht gegeben und der Algorithmus muss selber eine Struktur erkennen/lernen, wodurch er neue Daten bewerten kann
+    - Hier sind die Ergebnisse für die Testdaten nicht gegeben und der Algorithmus muss selber eine Strukturierung erkennen, mit der er neue Daten bewerten kann
 
 # Projektphasen
 
@@ -71,9 +71,9 @@ featplot <- function(featname){
 https://github.com/OstfriesenBI/PredmiRNA
 
 - Öffentliche einsehbare Git Repos
-- Tooling mit Web GUI and Issue Tracker z. B.
+- Git Repositories mit Web GUI, Issue Tracker etc.
 - GitHub Profil als Portofolio eines Entwicklers
-- Reproduktion: `sh git clone` & `sh snakemake report`
+- Reproduktion: `git clone` & `snakemake --use-conda report`
 
 
 ## Phase 1 - Done
@@ -82,7 +82,7 @@ https://github.com/OstfriesenBI/PredmiRNA
   - Inhalt/Aussage der einzelnen Features
   - Verstehen der Berechnung
   - Planung des Outputs
-  - Mögliche Tools zur Vereinfachung
+  - Existierende Programme
 - Schreiben der einzelnen Skripte für die Features
 
 ## Phase 2 - (almost) Done
@@ -100,10 +100,18 @@ https://github.com/OstfriesenBI/PredmiRNA
 
 # Feature Beispiele
 
+## Was ist ein Feature?
+  ![[@feature]](resources/feature.png)
+  
+ - Ein **Feature** ist eine Eigenschaft einer Datenausprägung
+ - Die Verknüpfung von vielen **sinnvollen** Features ist notwendig um auf ein gutes Ergebnis mit ML zu kommen
+ - Verringerung der Daten auf wenige leichter handhabbare Features um besser mit ihnen weiter arbeiten zu können
+ 
 ## Minimum Free Energy
- - Randfold berechnet die thermodynamisch stabilste Sekundärstruktur nach dem Algorithmus von Zuker
+ - Stabilste Sekundärstruktur nach dem Algorithmus von Zuker -> geringstes Energieniveau
+ - Funktionsweise: Aufsummierung der negativen Basenstapelkräfte
+ - Nicht unbedingt die in-vivo Struktur
  - Reprästiert als "Dot-Bracket notation"
- - Aufsummierung der negativen Basenstapelkräfte
  
  [ViennaRNA @rnafold]
  
@@ -129,9 +137,10 @@ featplot("MFEI1")
 ```
 
 ## Minimum Free Energy Index 1
- - MFE alleine ist ein nicht so gutes Feature
+ - MFE alleine ist ein kein gutes Feature
  - Das gleiche gilt für den GC Gehalt
- - Wenn man die MFE durch den GC Gehalt dividiert, erhält man ein besseres Feature
+ - Wenn man die MFE durch den GC Gehalt dividiert, erhält man ein besseres Feature -> $MFEI_1$
+ 
 $$
 MFEI_1=\frac{MFE}{GC%}
 $$
@@ -152,7 +161,8 @@ grid.arrange(mfe, gc, mfei1,layout_matrix=rbind(c(1,2),c(3,3)))
 ![](resources/Anaconda_Logo.png)
 
 - Problem in der Bioinformatik: Viele Tools, die von verschiedenen Libraries/anderen Tools abhängen
-- Conda ist ein Packagemanager vergleichbar wie apt, aber versatiler als pip
+- Conda ist ein Packagemanager vergleichbar wie apt
+- Unabhängig von dem Systempfaden verwendbar
 
 ## Python
 
@@ -160,16 +170,16 @@ grid.arrange(mfe, gc, mfei1,layout_matrix=rbind(c(1,2),c(3,3)))
 
 - Intepretierte, High-Level, Allzweck-Programmiersprache
 - Readability
-- Genutzt für: Web development, software development, mathematics, system scripting
+- Genutzt für: Web development, software development, scientific computing
 - Einfache Syntax ähnlich zur englischen Sprache
-- Benutzt neue Linien anstelle von z.B. Semikolons
+- Aktuell wichtige Rolle in Data Science und Bioinformatik
 
 ## R
 
 ![](resources/R_logo.png)
 
 - Programmiersprache und kostenlose Software Enviroment für statistische Berechnungen und Grafiken 
-- Wird benutzt von Statistikern und Data Minern um statistische Software und Daten Analysen zu entwickeln
+- Wird benutzt von Statistikern und Data Minern um Software für Daten Analysen zu entwickeln
 
 
 ## Snakemake
@@ -180,7 +190,6 @@ grid.arrange(mfe, gc, mfei1,layout_matrix=rbind(c(1,2),c(3,3)))
 - Ein Workflow beinhaltet einen Satz an Regeln
 - Eine Regel ist eine Beschreibung, wie aus Input-Files Output-Files zu erzeugen sind
 - Dadurch können Ergebnisse von einem Programm an ein anderes weitergegeben werden
-- Erweiterung des Python Syntaxes
 
 [@snakemake]
 
