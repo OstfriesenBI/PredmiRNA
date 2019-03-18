@@ -39,6 +39,9 @@ import weka.core.Utils;
 import weka.core.converters.CSVSaver;
 import weka.core.converters.ConverterUtils;
 import weka.core.converters.ConverterUtils.DataSource;
+import weka.filters.Filter;
+import weka.filters.UnsupervisedFilter;
+import weka.filters.unsupervised.attribute.RemoveType;
 
 @Command(description="Trains and evaluates a model using the given algorithm",name="WekaTrainer",mixinStandardHelpOptions=true,version="WekaTrainer 0.1")
 public class App implements Callable<Void>{
@@ -85,8 +88,11 @@ public class App implements Callable<Void>{
 
 	@Override
 	public Void call() throws Exception {
+		RemoveType uv = new RemoveType();
+		uv.setOptions(new String[]{"-T","string"});
 		final DataSource ds = new DataSource(arfffile.getAbsolutePath());
 		Instances instances = ds.getDataSet();
+		instances = Filter.useFilter(instances, uv);
 		if(instances.classIndex() ==-1){
 			instances.setClassIndex(instances.numAttributes() - 1);
 		}
