@@ -1,5 +1,5 @@
 ---
-title: "PredmiRNA"
+title: "Prediction of real Pre-MicroRNA Candidates using Machine Learning"
 author: "Bo Zheng, Marius Rüve, Filip Mazug, Lukas Jansen"
 date: "`r format(Sys.Date())`"
 output: 
