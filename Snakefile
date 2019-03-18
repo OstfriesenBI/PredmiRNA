@@ -4,13 +4,13 @@
 configfile: "config.yaml"
 
 # In how many chunks should each input sequence file be split
-noofsplits=4
+noofsplits=25
 
 # Paths
 basedir = config["datadir"] # Where to store the generated datafiles
 
 # Randfold Shuffling options
-shufflelist=[20,100,500,1000] # Number of permutations to try 
+shufflelist=[10,20,100,500,1000] # Number of permutations to try 
 shufflemethods=["m","d","z","f"] # Method to generate the permutations
 # m, mononucleotide shuffling; d, dinucleotide shuffling; z, zero-order markov model; f, first-order markov model
 
@@ -45,7 +45,7 @@ rule splitfasta:
 	input:
 		basedir+"/{inputgroup}.fasta"
 	output:
-		expand(basedir+"/{{inputgroup}}/split/{{inputgroup}}.fasta_chunk_{index}",index=splitindices)
+		temp(expand(basedir+"/{{inputgroup}}/split/{{inputgroup}}.fasta_chunk_{index}",index=splitindices))
 	params:
 		splits=noofsplits,
 		outputdir=directory(basedir+"/{inputgroup}/split/")
@@ -63,7 +63,7 @@ rule joincsv:
 		expand(basedir+"/{{inputgroup}}/datasplit/{{index}}.{type}.csv",type=["fold","seq","derived","stnley","spectral"]),
 		expand(basedir+"/{{inputgroup}}/stanley/{{index}}-{method}-{shuffles}.csv",method=shufflemethods,shuffles=shufflelist) 
 	output:
-		basedir+"/{inputgroup}/split-{index}.csv"
+		temp(basedir+"/{inputgroup}/split-{index}.csv")
 	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/csvmerge/csvmerge.R"
@@ -106,7 +106,7 @@ rule fold:
 	input:
 		basedir+"/{inputgroup}/split/{inputgroup}.fasta_chunk_{index}"
 	output:
-		basedir+"/{inputgroup}/fold/{index}.fold"
+		temp(basedir+"/{inputgroup}/fold/{index}.fold")
 	shadow:
 		"shallow" 
 	conda:
@@ -120,7 +120,7 @@ rule parsernafold:
 	input:
 		rules.fold.output
 	output:
-		basedir+"/{inputgroup}/datasplit/{index}.fold.csv"
+		temp(basedir+"/{inputgroup}/datasplit/{index}.fold.csv")
 	conda:
 		"envs/rnafold.yaml"
 	script:
@@ -133,7 +133,7 @@ rule stanleyRNAstats:
 	input:
 		fastachunk
 	output:
-		stats=basedir+"/{inputgroup}/stanley/{index}.stats"
+		stats=temp(basedir+"/{inputgroup}/stanley/{index}.stats")
 	conda:
 		"envs/rnafold.yaml"
 	shell:
@@ -145,7 +145,7 @@ rule parsestnlyfeatures:
 	input:
 		shuffledstatfiles=rules.stanleyRNAstats.output.stats
 	output:
-		basedir+"/{inputgroup}/datasplit/{index}.stnley.csv"
+		temp(basedir+"/{inputgroup}/datasplit/{index}.stnley.csv")
 	conda:
 		"envs/rnafold.yaml"
 	script:
@@ -166,7 +166,7 @@ rule snuffleshuffel:
 		rules.installPerlShuffle.output,
 		f=fastachunk
 	output:
-		basedir+"/{inputgroup}/stanley/shuffled/{index}-{method}-{shuffles}.fasta"
+		temp(basedir+"/{inputgroup}/stanley/shuffled/{index}-{method}-{shuffles}.fasta")
 	params:
 		method="{method}",
 		shuffles="{shuffles}"
@@ -181,7 +181,7 @@ rule foldshuffled:
 	input:
 		rules.snuffleshuffel.output
 	output:
-		basedir+"/{inputgroup}/stanley/shuffled/{index}-{method}-{shuffles}.fold"
+		temp(basedir+"/{inputgroup}/stanley/shuffled/{index}-{method}-{shuffles}.fold")
 	conda:
 		"envs/rnafold.yaml"
 	shell:
@@ -194,7 +194,7 @@ rule stnlyRandfeatures:
 		unshuffled=rules.fold.output,
 		shuffled=rules.foldshuffled.output,
 	output:
-		stats=basedir+"/{inputgroup}/stanley/{index}-{method}-{shuffles}.stats"
+		stats=temp(basedir+"/{inputgroup}/stanley/{index}-{method}-{shuffles}.stats")
 	params:
 		shuffles="{shuffles}"
 	conda:
@@ -209,7 +209,7 @@ rule parsestnlyRandfeatures:
 	input:
 		shuffledstatfiles=rules.stnlyRandfeatures.output.stats
 	output:
-		stats=basedir+"/{inputgroup}/stanley/{index}-{method}-{shuffles}.csv"
+		stats=temp(basedir+"/{inputgroup}/stanley/{index}-{method}-{shuffles}.csv")
 	conda:
 		"envs/rnafold.yaml"
 	script:
@@ -222,7 +222,7 @@ rule RNAspectral:
 	input:
 		rules.fold.output
 	output:
-		basedir+"/{inputgroup}/stanley/{index}.spectral"
+		temp(basedir+"/{inputgroup}/stanley/{index}.spectral")
 	conda:
 		"envs/rnafold.yaml"
 	shell:
@@ -235,7 +235,7 @@ rule parseRNAspectral:
 		shuffledstatfiles=rules.RNAspectral.output,
 		fastasource=rules.fold.input
 	output:
-		basedir+"/{inputgroup}/datasplit/{index}.spectral.csv"
+		temp(basedir+"/{inputgroup}/datasplit/{index}.spectral.csv")
 	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/shuffle/parseRNAspectral.R"
@@ -247,7 +247,7 @@ rule derviedcsv:
 	input:
 		rules.parsernafold.output
 	output:
-		basedir+"/{inputgroup}/datasplit/{index}.derived.csv"
+		temp(basedir+"/{inputgroup}/datasplit/{index}.derived.csv")
 	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/features_derived/features_derived.R"
@@ -258,7 +258,7 @@ rule dustmasker:
 	input:
 		fastachunk
 	output:
-		fastachunk+"_dm"
+		temp(fastachunk+"_dm")
 	conda: "envs/rnafold.yaml"
 	shell:
 		"dustmasker -in {input} -outfmt fasta -out {output} -level 15"
@@ -269,7 +269,7 @@ rule fasta2csv:
 	input:
 		rules.dustmasker.output
 	output:
-		basedir+"/{inputgroup}/datasplit/{index}.seq.csv"
+		temp(basedir+"/{inputgroup}/datasplit/{index}.seq.csv")
 	params:
 		realmarker="real"
 	conda: "envs/rnafold.yaml"
@@ -326,7 +326,7 @@ rule trainModel:
 		stdout=basedir+"/models/{alg}.log"
 	params:
 		alg=algtoclass
-	conda: "envs/rnafold.yaml"
+	#conda: "envs/rnafold.yaml"
 	shell:
 		"java -jar {input.program} --input {input.arff} --classatt realmiRNA --seed 1 --folds 10 --outputclassifier {output.model} --thresholdfile {output.thfile} {params.alg} > {output.stdout}"
 #

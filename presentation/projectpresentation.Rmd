@@ -25,11 +25,12 @@ knitr::opts_chunk$set(echo = FALSE)
 if(exists("snakemake")){
   df=read.csv(snakemake@input["finalcsv"])
 }else{
-  df=read.arff("2018-2-11-1-20-56.arff")
+  df=read.csv("all.csv")
+  df$realmiRNA=factor(df$realmiRNA)
 }
 
 featplot <- function(featname){
-  plot <-ggplot(df, aes_string(x=featname, fill="class",color="class"))+geom_density(alpha=0.4)+ggtitle(featname)
+  plot <-ggplot(df, aes_string(x=featname, fill="realmiRNA",color="realmiRNA"))+geom_density(alpha=0.4)+ggtitle(featname)
   return(plot)
 }
 ```
@@ -135,7 +136,7 @@ Wird zu
 
 ## Dichteverteilung der MFE
 ```{r mfe, eval=T, echo=F}
-featplot("MFEI1")
+featplot("mfe")
 ```
 
 ## Minimum Free Energy Index 1
@@ -149,9 +150,9 @@ $$
 
 ## Dichteverteilung der MFEI1
 ```{r mfei1, eval=T, echo=F}
-mfe<-featplot("ddG")
-gc<-featplot("gc_content")
-mfei1<-featplot("MFEI1")
+mfe<-featplot("mfe")
+gc<-featplot("gccontent")
+mfei1<-featplot("mfei1")
 grid.arrange(mfe, gc, mfei1,layout_matrix=rbind(c(1,2),c(3,3)))
 ```
 

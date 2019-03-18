@@ -24,7 +24,7 @@ features_derived <- function(infile){
   mfeI4 <- csvdf[,"mfe"]/tot_bases
   dP <- tot_bases/length
   diff <- dG-NEFE
-  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei1=mfeI1,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG,diff)
+  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei1=mfeI1,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG,diff,gccontent,freqs)
   return(total)
 }
 
