@@ -92,6 +92,7 @@ public class App implements Callable<Void>{
 		uv.setOptions(new String[]{"-T","string"});
 		final DataSource ds = new DataSource(arfffile.getAbsolutePath());
 		Instances instances = ds.getDataSet();
+		uv.setInputFormat(instances);
 		instances = Filter.useFilter(instances, uv);
 		if(instances.classIndex() ==-1){
 			instances.setClassIndex(instances.numAttributes() - 1);
