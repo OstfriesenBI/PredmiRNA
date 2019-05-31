@@ -16,8 +16,16 @@ fasta2csv <- function(in_path, out_path, realmiRNA) {
     lengths = sapply(sequence,nchar)
     lowcomplexity = (lowercase/lengths)
     
+    # Length until we a hit a stop codon
+    stopLen = function(seq,codon){
+     stoplens=regexpr(codon,seq)-1
+     selector=stoplens==-2
+     stoplens[selector]=nchar(seq[selector])
+     stoplens
+    }
+
     # Creates a data frame
-    df <- data.frame(comment, sequence, realmiRNA,lowcomplexity)
+    df <- data.frame(comment, sequence, realmiRNA,lowcomplexity,lenWoUGA=stopLen(sequence,"UGA"),lenWoUAG=stopLen(sequence,"UAG"),lenWoUAA=stopLen(sequence,"UAA"))
     
     # Writes the data frame to csv file to given path without extra row names
     write.csv(df,out_path,row.names=FALSE)
@@ -27,6 +35,8 @@ if(exists("snakemake")){
 	real=0
 	if(grepl(snakemake@params[["realmarker"]],snakemake@input[[1]])){
 		real=1
+	}else if(grepl(snakemake@params[["classmarker"]],snakemake@input[[1]])){
+		real=-1
 	}
 	fasta2csv(snakemake@input[[1]], snakemake@output[[1]], real)
 }else{

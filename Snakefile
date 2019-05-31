@@ -16,9 +16,9 @@ shufflemethods=["m","d","z","f"] # Method to generate the permutations
 
 
 # Please use unix style line endings (dos2unix)
-inputgroups=["real_izmir","pseudo_izmir"]
+inputgroups=["real_izmir","pseudo_izmir","toclassify"]
 # Real miRNA has to contain "real"
-
+# Files to classify have to contain "class"
 
 # These rules will be run locally
 localrules: presentation, arff, splitfasta, mergecsv, mergefinalcsv, fasta2csv, joincsv, buildJar, models, 
@@ -271,7 +271,8 @@ rule fasta2csv:
 	output:
 		temp(basedir+"/{inputgroup}/datasplit/{index}.seq.csv")
 	params:
-		realmarker="real"
+		realmarker="real",
+		classmarker="class"
 	conda: "envs/rnafold.yaml"
 	script:
 		"scripts/fasta2csv/fasta2csv.R"
@@ -287,16 +288,16 @@ algs = {"j48":"weka.classifiers.trees.J48","bayes":"weka.classifiers.bayes.Naive
 	"randomforest":"weka.classifiers.trees.RandomForest","randomtree":"weka.classifiers.trees.RandomTree","libsvm":"weka.classifiers.functions.LibSVM"}
 
 #
-# Generate .arff for Weka
+# Generate .arff for Weka Training
 #
 rule arff:
 	input:
 		rules.mergefinalcsv.output.csv
 	output:
-		basedir+"/all.arff"
+		basedir+"/train.arff"
 	conda: "envs/rnafold.yaml"
 	script:
-		"scripts/csv2arff/csv2arff.R"
+		"scripts/csv2arff/csv2trainarff.R"
 
 #
 # This rule builds the Java programs in the eclipseprojects folder
@@ -335,10 +336,42 @@ rule trainModel:
 rule models:
 	input: expand(rules.trainModel.output.model,alg=algs.keys())
 
+##
+##
+## Classification
+##
+##
 
 
+#
+# Build the arff for classification
+#
+rule classifyarff:
+	input:
+		rules.mergefinalcsv.output.csv
+	output:
+		basedir+"/toclassify.arff"
+	conda: "envs/rnafold.yaml"
+	script:
+		"scripts/csv2arff/csv2classifyarff.R"
 
+#
+# Run a classfier
+#
+rule classifyWithModel:
+	input:
+		program="bins/WekaClassify.jar",
+		arff=rules.classifyarff.output,
+		model=rules.trainModel.output.model
+	output:
+		basedir+"/classified/{alg}.csv"
+	#conda: "envs/rnafold.yaml"
+	threads: 4
+        shell:
+		"java -jar {input.program} -i {input.arff} -o {output} -t {threads} {input.model}"
 
+rule classify:
+	input: expand(rules.classifyWithModel.output,alg=algs.keys())
 
 ##
 ##

@@ -80,6 +80,9 @@ if(exists("snakemake")){
 }
 data = read.csv(infile,stringsAsFactors = FALSE)
 is.na(data) <- do.call(cbind,lapply(data, is.infinite))
+data[sapply(data, is.character)] <- list(NULL)
+data <- data[data$realmiRNA!=-1]
 data$realmiRNA <- factor(data$realmiRNA)
+data <- data[,c(setdiff(colnames(data),c("realmiRNA")),"realmiRNA")] 
 data <- stratified(data,"realmiRNA",1500)
 write.arff(x=data, file=outfile, eol = "\n", relation = deparse(substitute(x)))
