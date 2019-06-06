@@ -394,3 +394,16 @@ rule presentation:
 	script:
 		"presentation/projectpresentation.Rmd"
 
+#
+# Generate the plots
+#
+rule figs:
+	input:
+		data=rules.arff.output,
+		script="scripts/figs/figs.R"
+	output:
+		outdir=basedir+"/figs/"
+        conda:
+                "envs/rnafold.yaml"
+	script:
+		"{input.script}"
