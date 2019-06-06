@@ -2,5 +2,6 @@
 # YAML File format: https://github.com/Animosity/CraftIRC/wiki/Complete-idiot%27s-introduction-to-yaml
 
 {
-  "datadir" : "data"
+  "datadir" : "data",
+  "selected_feat": {"all"}
 }

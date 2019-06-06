@@ -296,6 +296,8 @@ rule arff:
 	output:
 		basedir+"/train.arff"
 	conda: "envs/rnafold.yaml"
+	params:
+		sel=config["selected_feat"]
 	script:
 		"scripts/csv2arff/csv2trainarff.R"
 
