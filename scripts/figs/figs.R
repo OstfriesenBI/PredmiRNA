@@ -40,9 +40,9 @@ k<-lapply(featurenames,genPlots,featurenames=featurenames)
 names(k) <- featurenames
 
 # Create dirs
-lapply(names(k),function(x)dir.create(file.path(outdir,x)))
+s<-lapply(names(k),function(x)dir.create(file.path(outdir,x)))
 # Save histos
-s<-lapply(names(k),function(x)lapply(k[[x]],function(y)ggsave(file.path(outdir,x,paste0(x,"_histo.png")),y,"png",width = 8,height = 8,units = "in")))
+s<-lapply(names(k),function(y)ggsave(file.path(outdir,y,paste0(y,"_histo.png")),k[[y]]$histo,"png",width = 8,height = 8,units = "in"))
 # Save point plots
 s<-lapply(names(k),function(x)lapply(names(k[[x]]$pointplots),function(y)ggsave(file.path(outdir,x,paste0(x,"_2_",y,".png")),k[[x]]$pointplots[[y]],"png",width = 8,height = 8,units = "in")))
 
