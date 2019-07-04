@@ -33,7 +33,7 @@ features_derived <- function(infile){
   nefe_div_gccon=NEFE/gccontent
   nefe_times_dP=NEFE*dP
   nefe_times_dP_div_gccon=NEFE*dP/gccontent
-  ua_div_gccon=feqs[["ua"]]/gccontent
+  ua_div_gccon=freqs[["ua"]]/gccontent
   
   total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei1=mfeI1,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG,diff,gccontent,freqs,nefe_div_gccon,nefe_times_dP,nefe_times_dP_div_gccon,ua_div_gccon)
   total[is.na(total)] <- 0
