@@ -16,7 +16,7 @@ features_derived <- function(infile){
   NEFE <- csvdf[,"efe"]/length
   dG <-  csvdf[,"mfe"]/length
   n_stems <- apply(as.matrix(csvdf[,"mfesecstructure"]),1, function(seq){str_count(seq,'[^\\(\\)]{3,}')})
-  tot_bases <-  apply(as.matrix(csvdf[,"mfesecstructure"]),1, function(seq){str_count(seq,'.')})
+  tot_bases <-  apply(as.matrix(csvdf[,"mfesecstructure"]),1, function(seq){str_count(seq,'\\.')})
   loopregex='\\.{4,}'
   n_loops <- apply(as.matrix(csvdf[,"mfesecstructure"]),1, function(seq){str_count(seq,loopregex)})
   gccontent <- apply(as.matrix(csvdf[, "sequence_nodm"]),1,function(rnaseq){GC(s2c(rnaseq))})
@@ -27,8 +27,15 @@ features_derived <- function(infile){
   dP <- tot_bases/length
   diff <- dG-NEFE
   
-
-  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei1=mfeI1,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG,diff,gccontent,freqs)
+  #
+  # Custom
+  #
+  nefe_div_gccon=NEFE/gccontent
+  nefe_times_dP=NEFE*dP
+  nefe_times_dP_div_gccon=NEFE*dP/gccontent
+  ua_div_gccon=feqs[["ua"]]/gccontent
+  
+  total <- cbind(comment=csvdf[,"comment"], length=length, nefe=NEFE,mfei1=mfeI1,mfei2=mfeI2,mfei3=mfeI3,mfei4=mfeI4,tot_bases,n_stems,n_loops,dP,dG,diff,gccontent,freqs,nefe_div_gccon,nefe_times_dP,nefe_times_dP_div_gccon,ua_div_gccon)
   total[is.na(total)] <- 0
   return(total)
 }

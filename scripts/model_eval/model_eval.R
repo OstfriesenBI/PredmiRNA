@@ -4,6 +4,7 @@ library(ggplot2)
 library(reshape2)
 library(dplyr)
 library(stringr)
+library(ggfortify)
 
 thfile = list("data/models/threshold/libsvm.csv","data/models/threshold/bayes.csv")
 log = list("data/models/libsvm.log","data/models/bayes.log")

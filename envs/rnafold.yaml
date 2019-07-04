@@ -1,6 +1,6 @@
 name: rnafold
 channels:
-  - https://metachannel.conda-forge.org/bioconda,conda-forge/r-seqinr,r-stringr,maven,r-ggplot2,r-foreign,r-gridextra,viennarna,perl-bioperl,exonerate,grep,blast,bioconductor-biostrings,cmake,perl-cpan-shell,perl-statistics-basic,r-base,r-knitr,r-markdown,pandoc,r-dplyr,r-boruta
+  - https://metachannel.conda-forge.org/bioconda,conda-forge/r-seqinr,r-stringr,maven,r-ggplot2,r-foreign,r-gridextra,viennarna,perl-bioperl,exonerate,grep,blast,bioconductor-biostrings,cmake,perl-cpan-shell,perl-statistics-basic,r-base,r-knitr,r-markdown,pandoc,r-dplyr,r-boruta,r-ggfortify
 # - conda-forge
 # - bioconda
 dependencies:
@@ -27,3 +27,4 @@ dependencies:
   - r-dplyr=0.8.2
   - r-reshape2=1.4.3
   - r-boruta=6.0.0
+  - r-ggfortify=0.4.5

@@ -9,6 +9,6 @@
       "No_Permutation":["mfe","efe","centroidmfe","ensembledistance","freqmfestruct","ensemblediversity","lowcomplexity","lenWoUGA","lenWoUAG","lenWoUAA","length","nefe","mfei1","mfei2","mfei3","mfei4","tot_bases","n_stems","n_loops","dP","dG","diff","gccontent","aa","ac","ag","au","ca","cc","cg","cu","ga","gc","gg","gu","ua","uc","ug","uu","Q","normQ","D","normD","spectral_Ver","spectral_Stems","spectral_Junct","spectral_Endpts","spectral_Midpts","spectral_SecEigen"],
    },
   "training_set_for_classification":"All_Literature",
-  "splits" : 15,
-  "benchcount": 2
+  "splits" : 25,
+  "benchcount": 10
 }

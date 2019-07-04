@@ -22,7 +22,8 @@ inputgroups=["real_izmir","pseudo_izmir","toclassify"]
 
 # These rules will be run locally
 localrules: presentation, arff, splitfasta, mergecsv, mergefinalcsv, fasta2csv, joincsv, buildJar, models, 
- derviedcsv, parsernafold, parsestnlyfeatures, parsestnlyRandfeatures, parseRNAspectral, installPerlShuffle
+ derviedcsv, parsernafold, parsestnlyfeatures, parsestnlyRandfeatures, parseRNAspectral, installPerlShuffle,
+ featuresets
 # Limit the index to a numerical value
 wildcard_constraints:
     index="\d+"
@@ -314,9 +315,9 @@ rule figsforset:
 	output:
 		outdir_feat=basedir+"/figs/{set}/feat",
 		outdir_pca=basedir+"/figs/{set}/pca",
-		borutalog=basedir+"/boruta/{set}/bor_log.txt",
-		borutadata=basedir+"/boruta/{set}/bor_dat.csv",
-		burotaplot=basedir+"/boruta/{set}/bor_plot.png",
+		borutalog=basedir+"/figs/{set}/bor_log.txt",
+		borutadata=basedir+"/figs/{set}/bor_dat.csv",
+		burotaplot=basedir+"/figs/{set}/bor_plot.png",
 	conda:
 		"envs/rnafold.yaml"
 	threads: 4
@@ -391,7 +392,7 @@ rule modelsforset:
 #
 rule models:
 	input:
-		expand(rules.modelsforset.output.measure,set=trainingsets.keys())
+		expand(rules.modelsforset.output.data,set=trainingsets.keys())
 
 
 
@@ -452,7 +453,33 @@ rule presentation:
 		"presentation/projectpresentation.Rmd"
 
 
+#
+# Feature Set comparison
+#
+rule featuresets:
+	input:
+		datafiles=expand(rules.modelsforset.output.data,set=trainingsets.keys()),
+		featurefiles=expand(rules.arff.output,set=trainingsets.keys()),
+		script="scripts/featureset_compare/featureset_compare.R"
+	output:
+		combinedoutputfile=basedir+"/figs/featureset_comparison.csv",
+		fmeasures=basedir+"/figs/fmeasures.png",
+		mem=basedir+"/figs/mem.png",
+		cputime=basedir+"/figs/cputime.png",
+		roc=basedir+"/figs/roc.png",
+		selections=basedir+"/figs/featuresets.csv",
+		featurecount=basedir+"/figs/numberoffeatures.png"
+	params:
+		featuresets=trainingsets.keys()
+	conda:
+		"envs/rnafold.yaml"
+	script:
+		"{input.script}"
+
+
+
 rule all:
 	input:
 		rules.figs.input,
-		rules.models.input
+		rules.models.input,
+		rules.featuresets.output

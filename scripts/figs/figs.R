@@ -4,11 +4,11 @@ library(foreign)
 library(ggplot2)
 library(reshape2)
 library(Boruta)
-#library(ggfortify)
+library(ggfortify)
 
 set.seed(1)
 
-trainarff <- "data/train.arff"
+trainarff <- "data/All_Literature_train.arff"
 outdirpca <- "outputfig"
 outdirfeat <- "outputfig"
 classname  <- "realmiRNA"
@@ -20,7 +20,7 @@ if(exists("snakemake")){
   outdirpca <-  snakemake@output[["outdir_pca"]]
   outdirfeat <-  snakemake@output[["outdir_feat"]]
   borutalog <-  snakemake@output[["borutalog"]]
-  borutadata <-  snakemake@output[["burotadata"]]
+  burotadata <-  snakemake@output[["burotadata"]]
   burotaplot <-  snakemake@output[["burotaplot"]]
 }
 
@@ -66,13 +66,14 @@ dev.off()
 
 genPlots <- function(featurename,featurenames,bins=32){
   histo <- ggplot(data) + aes_string(x=featurename,fill=classname) + geom_histogram(bins = bins, position = "identity",alpha=0.45) + theme(legend.position = "bottom")
-  otherfeaturenames <-  setdiff(featurenames,c(featurename))
-  genPointPlot <- function(featurename2){
-    ggplot(data) + aes_string(x=featurename,y=featurename2,color=classname) + geom_point() + theme(legend.position = "bottom")
-  }
-  pointplots=lapply(otherfeaturenames,genPointPlot)
-  names(pointplots) <- otherfeaturenames
-  res <- list(histo=histo,pointplots=pointplots)
+  boxplot <- ggplot(data) + aes_string(x=classname,y=featurename) + geom_boxplot() + theme(legend.position = "bottom")
+  # otherfeaturenames <-  setdiff(featurenames,c(featurename))
+  # genPointPlot <- function(featurename2){
+  #   ggplot(data) + aes_string(x=featurename,y=featurename2,color=classname) + geom_point() + theme(legend.position = "bottom")
+  # }
+  # pointplots=lapply(otherfeaturenames,genPointPlot)
+  # names(pointplots) <- otherfeaturenames
+  res <- list(histo=histo,boxplot=boxplot)#,pointplots=pointplots)
   res
 }
 featurenames = setdiff(colnames(data),c(classname))
@@ -81,12 +82,11 @@ k<-lapply(featurenames,genPlots,featurenames=featurenames[!grepl("permuted_.+",f
 names(k) <- featurenames
 
 print("Saving feat plots ...")
-# Create dirs
-s<-lapply(names(k),function(x)dir.create(file.path(outdirfeat,x)))
 # Save histos
-s<-lapply(names(k),function(y)ggsave(file.path(outdirfeat,y,paste0(y,"_histo.png")),k[[y]]$histo,"png",width = 8,height = 8,units = "in"))
+s<-lapply(names(k),function(y)ggsave(file.path(outdirfeat,paste0(y,"_histo.png")),k[[y]]$histo,"png",width = 8,height = 8,units = "in"))
+s<-lapply(names(k),function(y)ggsave(file.path(outdirfeat,paste0(y,"_boxplot.png")),k[[y]]$boxplot,"png",width = 8,height = 8,units = "in"))
 # Save point plots
-s<-lapply(names(k),function(x)lapply(names(k[[x]]$pointplots),function(y)ggsave(file.path(outdirfeat,x,paste0(x,"_2_",y,".png")),k[[x]]$pointplots[[y]],"png",width = 8,height = 8,units = "in")))
+#s<-lapply(names(k),function(x)lapply(names(k[[x]]$pointplots),function(y)ggsave(file.path(outdirfeat,x,paste0(x,"_2_",y,".png")),k[[x]]$pointplots[[y]],"png",width = 8,height = 8,units = "in")))
 
 
 # Copied from http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization
