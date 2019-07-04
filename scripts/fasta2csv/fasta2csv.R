@@ -25,7 +25,7 @@ fasta2csv <- function(in_path, out_path, realmiRNA) {
     }
 
     # Creates a data frame
-    df <- data.frame(comment, sequence, realmiRNA,lowcomplexity,lenWoUGA=stopLen(sequence,"UGA"),lenWoUAG=stopLen(sequence,"UAG"),lenWoUAA=stopLen(sequence,"UAA"))
+    df <- data.frame(comment, sequence, realmiRNA,lowcomplexity,lenWoUGA=stopLen(toupper(sequence),"TGA"),lenWoUAG=stopLen(toupper(sequence),"TAG"),lenWoUAA=stopLen(toupper(sequence),"TAA"))
     
     # Writes the data frame to csv file to given path without extra row names
     write.csv(df,out_path,row.names=FALSE)

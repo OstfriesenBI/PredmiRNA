@@ -81,12 +81,12 @@ if(exists("snakemake")){
 	selected_feat = snakemake@params[["sel"]]
 }
 data <- read.csv(infile,stringsAsFactors = FALSE)
-if(selected_feat!="all"){
-	data <- data[,unlist(selected_feat)]
+if(selected_feat!=list("all")){
+	data <- data[,c(unlist(selected_feat),"realmiRNA")]
 }
 is.na(data) <- do.call(cbind,lapply(data, is.infinite))
 data[sapply(data, is.character)] <- list(NULL)
-data <- data[data$realmiRNA!=-1]
+data <- data[data$realmiRNA!=-1,]
 data$realmiRNA <- factor(data$realmiRNA)
 data <- data[,c(setdiff(colnames(data),c("realmiRNA")),"realmiRNA")] 
 data <- stratified(data,"realmiRNA",min(table(data$realmiRNA)))
