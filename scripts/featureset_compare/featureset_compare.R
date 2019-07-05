@@ -44,7 +44,7 @@ p1<-ggplot(data) + aes(x=`Feature Set`,y=`F.Measure`,color=Model,group=Model) +g
 ggsave(roc,p1+aes(y=ROC.Area)+ylab("ROC Area"),"png",width = 7,height = 7,units = "in")
 ggsave(fmeasures,p1+aes(y=F.Measure)+ylab("F Measure"),"png",width = 7,height = 7,units = "in")
 ggsave(mem,p1+aes(y=median_max_rss)+ylab("Used memory in MB"),"png",width = 7,height = 7,units = "in")
-ggsave(cputime,p1+aes(y=cputime)+ylab("CPU time in s"),"png",width = 7,height = 7,units = "in")
+ggsave(cputime,p1+aes(y=median_s)+ylab("CPU time in s"),"png",width = 7,height = 7,units = "in")
 ggsave(featurecount,ggplot(data.frame(`FeatureSet`=featuresets,`FeatureCount`=unlist(lapply(fselection,length))),aes(`FeatureSet`,`FeatureCount`,group=1))+geom_point()+geom_line()+xlab("Feature Set")+ylab("Number of Features") + theme(legend.position = "bottom"),"png",width = 7,height = 7,units = "in")
 
 write.csv(data,combinedoutputfile)

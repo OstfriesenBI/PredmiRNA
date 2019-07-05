@@ -117,7 +117,7 @@ plotCorrHeatMap<-function(method){
     coord_fixed()
   list(cormat=pear_all,dmat=dd,clstr=hc,plot=pl)
 }
-methods <- c("pearson","kendall","spearman")
+methods <- c("pearson","spearman")
 print("Generating corr plots ...")
 corplots<-lapply(methods,plotCorrHeatMap)
 names(corplots) <- methods
