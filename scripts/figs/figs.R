@@ -20,7 +20,7 @@ if(exists("snakemake")){
   outdirpca <-  snakemake@output[["outdir_pca"]]
   outdirfeat <-  snakemake@output[["outdir_feat"]]
   borutalog <-  snakemake@output[["borutalog"]]
-  burotadata <-  snakemake@output[["burotadata"]]
+  burotadata <-  snakemake@output[["borutadata"]]
   burotaplot <-  snakemake@output[["burotaplot"]]
 }
 
@@ -49,7 +49,6 @@ data.boruta.df <- attStats(data.boruta)
 data.boruta.df$feature <- rownames(data.boruta.df)
 rownames(data.boruta.df) <- NULL
 write.csv(data.boruta.df,burotadata)
-
 
 png(burotaplot,width = 1280,height = 720)
 plot(data.boruta, xlab = "", xaxt = "n")

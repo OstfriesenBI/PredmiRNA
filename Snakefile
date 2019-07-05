@@ -313,8 +313,8 @@ rule figsforset:
 		data=rules.arff.output,
 		script="scripts/figs/figs.R"
 	output:
-		outdir_feat=basedir+"/figs/{set}/feat",
-		outdir_pca=basedir+"/figs/{set}/pca",
+		outdir_feat=directory(basedir+"/figs/{set}/feat"),
+		outdir_pca=directory(basedir+"/figs/{set}/pca"),
 		borutalog=basedir+"/figs/{set}/bor_log.txt",
 		borutadata=basedir+"/figs/{set}/bor_dat.csv",
 		burotaplot=basedir+"/figs/{set}/bor_plot.png",
