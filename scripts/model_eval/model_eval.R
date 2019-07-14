@@ -6,9 +6,9 @@ library(dplyr)
 library(stringr)
 library(ggfortify)
 
-thfile = list("data/models/threshold/libsvm.csv","data/models/threshold/bayes.csv")
-log = list("data/models/libsvm.log","data/models/bayes.log")
-bench = list("data/models/libsvm.benchmark.txt","data/models/bayes.benchmark.txt")
+thfile = list("data/models/All_Literature/threshold/LibSVM.csv","data/models/All_Literature/threshold/NaiveBayes.csv")
+log = list("data/models/All_Literature/LibSVM.log","data/models/All_Literature/NaiveBayes.log")
+bench = list("data/models/All_Literature/LibSVM.benchmark.txt","data/models/All_Literature/NaiveBayes.benchmark.txt")
 
 modelnames=list("libsvm","bayes")
 
@@ -80,7 +80,7 @@ molten_alldata<- alldata%>% mutate_if(is.factor,as.character)%>% rename(`Median 
 pl <- molten_alldata %>% group_by(Measure) %>%  mutate(multi=case_when(Measure == "Median RAM Usage in MB" |Measure == "Median CPU time in s" ~ 1, TRUE ~-1))%>% 
   mutate(value=value*multi) %>% mutate(Rank=rank(value)) %>% mutate(value=value*multi)  %>%
   ggplot() + aes(x=Model,y=Measure,fill=Rank) + geom_tile() +geom_text(aes(label=sprintf("%0.2f", round(value, digits = 2)))) +  scale_fill_gradient(low="green",high="red")
-ggsave(measure,pl,"png",height = 16, width = 16, units = "cm")
+ggsave(measure,pl,"png",height = 14, width = 22, units = "cm")
 
 
 write.csv(alldata,data)

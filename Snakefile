@@ -44,7 +44,7 @@ fastachunk=basedir+"/{inputgroup}/split/{inputgroup}.fasta_chunk_{index}"
 splitindices=['%07d'%i for i in range(0,noofsplits)];
 rule splitfasta:
 	input:
-		basedir+"/{inputgroup}.fasta"
+		"input/{inputgroup}.fasta"
 	output:
 		temp(expand(basedir+"/{{inputgroup}}/split/{{inputgroup}}.fasta_chunk_{index}",index=splitindices))
 	params:
@@ -246,12 +246,13 @@ rule parseRNAspectral:
 #
 rule derviedcsv:
 	input:
-		rules.parsernafold.output
+		rules.parsernafold.output,
+		script="scripts/features_derived/features_derived.R",
 	output:
-		temp(basedir+"/{inputgroup}/datasplit/{index}.derived.csv")
+		temp(basedir+"/{inputgroup}/datasplit/{index}.derived.csv"),
 	conda: "envs/rnafold.yaml"
 	script:
-		"scripts/features_derived/features_derived.R"
+		"{input.script}"
 #
 # Runs dustmasker on the chunk
 #
@@ -297,14 +298,15 @@ trainingsets = config["training_sets"]
 rule arff:
 	input:
 		rules.mergefinalcsv.output.csv,
-		"config.json"
+		"config.json",
+		script="scripts/csv2arff/csv2trainarff.R",
 	output:
-		basedir+"/{set}_train.arff"
+		basedir+"/models/{set}/{set}_train.arff"
 	conda: "envs/rnafold.yaml"
 	params:
 		sel=lambda x: trainingsets[x["set"]]
 	script:
-		"scripts/csv2arff/csv2trainarff.R"
+		"{input.script}"
 #
 # Generate the plots for a feature set
 #
@@ -356,7 +358,7 @@ rule trainModel:
 		arff=rules.arff.output
 	output:
 		model= basedir+"/models/{set}/{alg}.ser",
-		thfile=basedir+"/models/{set}/threshold/{alg}.csv",
+		thfile=basedir+"/models/{set}/{alg}.threshold.csv",
 		stdout=basedir+"/models/{set}/{alg}.log"
 	benchmark:
 		repeat(basedir+"/models/{set}/{alg}.benchmark.txt",config["benchcount"])
@@ -470,7 +472,8 @@ rule featuresets:
 		selections=basedir+"/figs/featuresets.csv",
 		featurecount=basedir+"/figs/numberoffeatures.png"
 	params:
-		featuresets=trainingsets.keys()
+		featuresets=trainingsets.keys(),
+		setlabels=config["set_labels"]
 	conda:
 		"envs/rnafold.yaml"
 	script:

@@ -8,7 +8,7 @@ library(ggfortify)
 
 set.seed(1)
 
-trainarff <- "data/All_Literature_train.arff"
+trainarff <- "data/models/Weka_Confirmed/Weka_Confirmed_train.arff"
 outdirpca <- "outputfig"
 outdirfeat <- "outputfig"
 classname  <- "realmiRNA"
@@ -124,16 +124,35 @@ names(corplots) <- methods
 print("Saving corr plots ...")
 s<-lapply(methods, function(x)ggsave(file.path(outdirpca,paste0(x,"_cor.png")),corplots[[x]][["plot"]],"png",width = 10,height = 10,units = "in"))
 for(m in methods){
-  png(file.path(outdirpca,paste0(m,"_cor_clust.png")),width = 1280*2,height = 720*2)
+  png(file.path(outdirpca,paste0(m,"_cor_vis_clust.png")),width = 1280*2,height = 720*2)
   par(cex=0.8, mar=c(5, 8, 4, 1))
   plot(corplots[[m]]$clstr,main=NULL,xlab="Feature",ylab="(1-Correlation)/2")
+  dev.off()
+  clust <- hclust(as.dist(1-abs(corplots[[m]]$cormat)))
+  cutheight <- 0.33333
+  grouplabels <- cutree(clust,h=cutheight)
+  grouplabels <- as.data.frame(grouplabels)
+  grouplabels$feature <- rownames(grouplabels)
+  rownames(grouplabels) <- NULL
+  groups <-merge(data.boruta.df, grouplabels,by="feature")
+  groups <- groups[order(groups$grouplabels, -groups$medianImp),]
+  selectedfeatures <- aggregate(.~grouplabels,groups,FUN=head,1)
+  sink(file.path(outdirpca,paste0(m,"_cor_abs_clust_log.txt")))
+  print("Height")
+  print(cutheight)
+  print("Best feature according to boruta median importance")
+  cat(paste0(lapply(selectedfeatures$feature,function(x)paste0("\"",x,"\"")),collapse = ","))
+  sink()
+  png(file.path(outdirpca,paste0(m,"_cor_abs_clust.png")),width = 1280*2,height = 720*2)
+  par(cex=0.8, mar=c(5, 8, 4, 1))
+  plot(clust,main=NULL,xlab="Feature",ylab="(1-abs(Correlation))")
   dev.off()
 }
 
 
 print("Generating pca plots ...")
 pca <- prcomp(datan, center = TRUE,scale. = TRUE)
-autoplot(pca, data = data, colour = classname)
+#autoplot(pca, data = data, colour = classname)
 
 print("Saving pca plots ...")
 ggsave(file.path(outdirpca,"pca_1_2_points.png"), autoplot(pca, data = data, colour = classname,x=1,y=2) + theme(legend.position = "bottom"),"png",width = 10,height = 10,units = "in")

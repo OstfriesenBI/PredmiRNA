@@ -3,9 +3,10 @@
 library(foreign)
 library(ggplot2)
 
-featuresets <- c("All_Literature","Bor_Confirmed","No_Permutation")
+featuresets <- c("All_Literature","Bor_Confirmed","Weka_Confirmed")
+featuresets.labels <- c("Literatur","Boruta","Weka SVMeval")
 datafiles <- as.list(paste0(paste0("data/figs/",featuresets),"/comparison.csv"))
-featurefiles <- as.list(paste0(paste0("data/",featuresets),"_train.arff"))
+featurefiles <- as.list(paste0(paste0(paste0("data/models/",featuresets),"/",featuresets),"_train.arff"))
 cputime <- "time.png"
 mem <-"mem.png"
 fmeasures <- "fmeasure.png"
@@ -25,7 +26,9 @@ if(exists("snakemake")){
   roc <- snakemake@output[["roc"]]
   selections <- snakemake@output[["selections"]]
   featurecount <- snakemake@output[["featurecount"]]
+  featuresets.labels <- snakemake@params[["setlabels"]]
 }
+
 
 names(datafiles) <- featuresets
 names(featurefiles) <- featuresets
@@ -37,14 +40,17 @@ colnames(featureset_sel)[2:(1+length(featuresets))]<-featuresets
 write.csv(featureset_sel,selections)
 
 data <- do.call(rbind,lapply(featuresets,function(x)cbind(`Feature Set`=x,read.csv(datafiles[[x]]))))
-data$x <- NULL
-data$`Feature Set`=factor(data$`Feature Set`,levels = featuresets)
+data$X <- NULL
+data <- merge(data,data.frame(`FeatureSet`=featuresets,`feature_count`=sapply(featuresets,function(set)sum(featureset_sel[[set]]))),by.x="Feature Set",by.y="FeatureSet")
+data$`Feature Set`=factor(data$`Feature Set`,levels = featuresets,labels = featuresets.labels)
+
+
 p1<-ggplot(data) + aes(x=`Feature Set`,y=`F.Measure`,color=Model,group=Model) +geom_point()+geom_line() + theme(legend.position = "bottom")
 
-ggsave(roc,p1+aes(y=ROC.Area)+ylab("ROC Area"),"png",width = 7,height = 7,units = "in")
-ggsave(fmeasures,p1+aes(y=F.Measure)+ylab("F Measure"),"png",width = 7,height = 7,units = "in")
-ggsave(mem,p1+aes(y=median_max_rss)+ylab("Used memory in MB"),"png",width = 7,height = 7,units = "in")
-ggsave(cputime,p1+aes(y=median_s)+ylab("CPU time in s"),"png",width = 7,height = 7,units = "in")
-ggsave(featurecount,ggplot(data.frame(`FeatureSet`=featuresets,`FeatureCount`=unlist(lapply(fselection,length))),aes(`FeatureSet`,`FeatureCount`,group=1))+geom_point()+geom_line()+xlab("Feature Set")+ylab("Number of Features") + theme(legend.position = "bottom"),"png",width = 7,height = 7,units = "in")
+ggsave(roc,p1+aes(y=ROC.Area)+ylab("ROC Area"),"png",width = 21,height = 15.3,units = "cm")
+ggsave(fmeasures,p1+aes(y=F.Measure)+ylab("F Measure"),"png",width = 21,height = 15.3,units = "cm")
+ggsave(mem,p1+aes(y=median_max_rss)+ylab("Used memory in MB"),"png",width = 14,height = 14,units = "cm")
+ggsave(cputime,p1+aes(y=median_s)+ylab("CPU time in s"),"png",width = 14,height = 14,units = "cm")
+ggsave(featurecount,ggplot(data[data$Model==data$Model[[1]],],aes(`Feature Set`,`feature_count`,group=1))+geom_point()+geom_line()+xlab("Feature Set")+ylab("Number of Features") + theme(legend.position = "bottom"),"png",width = 21,height = 15.3,units = "cm")
 
 write.csv(data,combinedoutputfile)

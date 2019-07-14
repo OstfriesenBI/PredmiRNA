@@ -108,8 +108,10 @@ vignettes/*.pdf
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
 .vscode/settings.json
-.Rproj.user
+Rproj.user
 
 /bins/
 /presentation/projectpresentation.html
 
+outputfig/
+presentation/report/
