@@ -411,6 +411,8 @@ rule models:
 rule classifyarff:
 	input:
 		rules.mergefinalcsv.output.csv
+	params:
+		sel=trainingsets[config["training_set_for_classification"]]
 	output:
 		basedir+"/toclassify.arff"
 	conda: "envs/rnafold.yaml"
@@ -428,9 +430,8 @@ rule classifyWithModel:
 	output:
 		basedir+"/classified/{alg}.csv"
 	conda: "envs/rnafold.yaml"
-	threads: 4
         shell:
-		"java -jar {input.program} -i {input.arff} -o {output} -t {threads} {input.model}"
+		"java -jar {input.program} -i {input.arff} -o {output}  --classatt realmiRNA {input.model}"
 
 rule classify:
 	input: expand(rules.classifyWithModel.output,alg=algs.keys())

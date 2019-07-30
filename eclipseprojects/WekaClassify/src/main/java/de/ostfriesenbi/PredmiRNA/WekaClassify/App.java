@@ -36,10 +36,8 @@ public class App implements Callable<Void>{
 	@Option(names={"-n","--name"},description="The name of the identifier field in the .arff file")
 	private String name="comment";
 	
-	@Option(names={"-t","--threads"},description="The number of threads to use")
-	private int threads=2;
-
-
+        @Option(names={"-c","--classatt"},description="The name of the class attribute, if not set, the second last one will be used")
+        private String classattname;
 
 
 
@@ -52,20 +50,29 @@ public class App implements Callable<Void>{
 	public Void call() throws Exception {
 		final DataSource ds = new DataSource(arfffile.getAbsolutePath());
 		final Instances instances = ds.getDataSet();
-		final ExecutorService es= Executors.newFixedThreadPool(threads);
 		final Classifier c=(Classifier) SerializationHelper.read(serializedclass.getAbsolutePath());
-		final Map<String, Future<Double>> results=new HashMap<>();
 		
-		Attribute att = instances.attribute(name);
+		//Attribute att = instances.attribute(name);
 		
-		for (Instance instance : instances) {
-			results.put(instance.stringValue(att), es.submit(() -> c.classifyInstance(instance)));
-		}
+                if(instances.classIndex() ==-1){
+                        instances.setClassIndex(instances.numAttributes() - 2);
+                }
+                if(classattname!=null){
+                        final Attribute classatt=instances.attribute(classattname);
+                        if(classatt==null){
+                                throw new RuntimeException("Could not find the specified class attribute!");
+                        }
+                        instances.setClass(classatt);
+                }
+
 		
 		try(PrintWriter pw=new PrintWriter(csvfile)){
-			pw.println(name+",realmiRNA");
-			for (Entry<String, Future<Double>> result : results.entrySet()) {
-				pw.println(result.getKey()+","+result.getValue().get().toString());
+			pw.println(name+","+classattname);
+                        int i=0;
+                        for (Instance instance : instances) {
+				pw.print(i++);
+				pw.print(",");
+				pw.println(c.classifyInstance(instance));
 			}
 		}
 		return null;
