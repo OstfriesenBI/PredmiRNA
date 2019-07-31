@@ -8,7 +8,8 @@ library(ggfortify)
 
 set.seed(1)
 
-trainarff <- "data/models/Weka_Confirmed/Weka_Confirmed_train.arff"
+#trainarff <- "data/models/Weka_Confirmed/Weka_Confirmed_train.arff"
+trainarff <- "data/models/All_Literature/All_Literature_train.arff"
 outdirpca <- "outputfig"
 outdirfeat <- "outputfig"
 classname  <- "realmiRNA"

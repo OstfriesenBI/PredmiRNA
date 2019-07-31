@@ -486,4 +486,5 @@ rule all:
 	input:
 		rules.figs.input,
 		rules.models.input,
-		rules.featuresets.output
+		rules.featuresets.output,
+		rules.classify.input
